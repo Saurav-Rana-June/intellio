@@ -1,7 +1,7 @@
+import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intellio/infrastructure/theme/theme.dart';
 
 import 'app/routes/app_pages.dart';
 

@@ -1,21 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Map<int, Color> swatch = {
-//   50: const Color.fromRGBO(87, 179, 62, .1),
-//   100: const Color.fromRGBO(87, 179, 62, .2),
-//   200: const Color.fromRGBO(87, 179, 62, .3),
-//   300: const Color.fromRGBO(87, 179, 62, .4),
-//   400: const Color.fromRGBO(87, 179, 62, .5),
-//   500: const Color.fromRGBO(87, 179, 62, .6),
-//   600: const Color.fromRGBO(87, 179, 62, .7),
-//   700: const Color.fromRGBO(87, 179, 62, .8),
-//   800: const Color.fromRGBO(87, 179, 62, .9),
-//   900: const Color.fromRGBO(87, 179, 62, 1),
-// };
-
-// MaterialColor primarySwatch = MaterialColor(0xFF2998CB, swatch);
-
 Color white = const Color(0xFFFFFFFF);
 Color primary = const Color(0xFFCE57D6);
 Color secondary = const Color(0xFF47364B);

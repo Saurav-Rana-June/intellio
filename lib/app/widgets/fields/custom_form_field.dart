@@ -1,5 +1,6 @@
+import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:intellio/infrastructure/theme/theme.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CustomFormField extends StatelessWidget {
   final TextEditingController controller;
@@ -50,13 +51,18 @@ class CustomFormField extends StatelessWidget {
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: r16.copyWith(),
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            hintStyle: r16.copyWith(
+              color: regular50
+            ),
+            prefixIcon: Icon(prefixIcon, color: regular50),
             suffixIcon:
                 isPassword
                     ? IconButton(
                       icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        _obscureText
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        color: regular50,
                       ),
                       onPressed: () {
                         setState(() {
@@ -73,7 +79,29 @@ class CustomFormField extends StatelessWidget {
                       onPressed: onSuffixIconPressed,
                     )
                     : null,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(
+                width: 1.5,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Theme.of(context).dividerColor,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              borderSide: BorderSide(width: 1.2, color: dangerColor),
+            ),
+            errorStyle: r14.copyWith(color: dangerColor),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(width: 1.2, color: dangerColor),
+            ),
           ),
         );
       },
