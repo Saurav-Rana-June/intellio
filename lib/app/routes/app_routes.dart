@@ -10,6 +10,10 @@ abstract class Routes {
   static const OTP = _Paths.OTP;
   static const CHANGE = _Paths.CHANGE;
   static const CHANGE_PASSWORD = _Paths.CHANGE_PASSWORD;
+  static const HOME = _Paths.HOME;
+  static const SEARCH = _Paths.SEARCH;
+  static const SPACES = _Paths.SPACES;
+  static const ME = _Paths.ME;
 }
 
 abstract class _Paths {
@@ -21,4 +25,8 @@ abstract class _Paths {
   static const OTP = '/otp';
   static const CHANGE = '/change';
   static const CHANGE_PASSWORD = '/change-password';
+  static const HOME = '/home';
+  static const SEARCH = '/search';
+  static const SPACES = '/spaces';
+  static const ME = '/me';
 }

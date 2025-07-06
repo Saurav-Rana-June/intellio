@@ -101,7 +101,10 @@ class LoginView extends GetView<LoginController> {
                 CustomPrimaryButton(
                   label: "Login",
                   onTap: () {
-                    Get.toNamed('/otp');
+                    Get.toNamed(
+                      '/otp',
+                      arguments: {'isFromForgotPassword': false},
+                    );
                   },
                 ),
 

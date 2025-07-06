@@ -89,7 +89,7 @@ class OtpView extends GetView<OtpController> {
                       if (isFromForgotPassword) {
                         Get.toNamed('/change-password');
                       }
-                      // Get.toNamed('/otp');
+                      Get.toNamed('/home');
                     },
                   ),
                 ],
