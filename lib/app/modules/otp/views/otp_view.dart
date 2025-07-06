@@ -34,7 +34,7 @@ class OtpView extends GetView<OtpController> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: primary,),
+        border: Border.all(color: primary),
       ),
     );
 
@@ -86,7 +86,9 @@ class OtpView extends GetView<OtpController> {
                   CustomPrimaryButton(
                     label: "Verify OTP",
                     onTap: () {
-                      if (isFromForgotPassword) {}
+                      if (isFromForgotPassword) {
+                        Get.toNamed('/change-password');
+                      }
                       // Get.toNamed('/otp');
                     },
                   ),
