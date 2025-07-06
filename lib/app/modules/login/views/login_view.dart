@@ -33,7 +33,7 @@ class LoginView extends GetView<LoginController> {
                       width: 40,
                       height: 40,
                       colorFilter:
-                          Get.isDarkMode
+                          Theme.of(context).brightness == Brightness.dark
                               ? ColorFilter.mode(white, BlendMode.srcIn)
                               : null,
                     ),
@@ -81,7 +81,10 @@ class LoginView extends GetView<LoginController> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Get.toNamed('/otp', arguments: {'isFromForgotPassword': true});
+                        Get.toNamed(
+                          '/otp',
+                          arguments: {'isFromForgotPassword': true},
+                        );
                       },
                       child: Text(
                         'Forgot Password ?',
