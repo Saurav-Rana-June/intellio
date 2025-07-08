@@ -22,6 +22,8 @@ TextStyle h1 = GoogleFonts.jost(fontSize: 32, fontWeight: FontWeight.w600);
 
 TextStyle h2 = GoogleFonts.jost(fontSize: 22, fontWeight: FontWeight.w600);
 
+TextStyle r20 = GoogleFonts.jost(fontSize: 20, fontWeight: FontWeight.w400);
+
 TextStyle r18 = GoogleFonts.jost(fontSize: 18, fontWeight: FontWeight.w400);
 
 TextStyle r16 = GoogleFonts.jost(fontSize: 16, fontWeight: FontWeight.w400);
@@ -34,9 +36,10 @@ class AppTheme {
   // Dark Theme
   static ThemeData darkTheme = ThemeData(
     fontFamily: GoogleFonts.poppins().fontFamily,
-    textTheme: GoogleFonts.poppinsTextTheme().apply(
-      bodyColor: white,
-      displayColor: white,
+    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+      bodyLarge: r18.copyWith(color: white),
+      bodyMedium: r16.copyWith(color: white),
+      bodySmall: r14.copyWith(color: white.withValues(alpha: 0.5)),
     ),
     primaryColor: primary,
     brightness: Brightness.dark,
@@ -59,12 +62,13 @@ class AppTheme {
     dividerColor: white,
   );
 
-// Light Theme
+  // Light Theme
   static ThemeData lightTheme = ThemeData(
     fontFamily: GoogleFonts.poppins().fontFamily,
-    textTheme: GoogleFonts.poppinsTextTheme().apply(
-      bodyColor: regular,
-      displayColor: regular,
+    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+      bodyLarge: r18.copyWith(color: regular),
+      bodyMedium: r16.copyWith(color: regular),
+      bodySmall: r14.copyWith(color: regular.withValues(alpha: 0.5)),
     ),
     primaryColor: primary,
     brightness: Brightness.light,

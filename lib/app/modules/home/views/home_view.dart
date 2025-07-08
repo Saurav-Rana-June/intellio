@@ -1,6 +1,7 @@
 import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 
@@ -19,20 +20,109 @@ class HomeView extends GetView<HomeController> {
           onTap: (index) {
             controller.toggleScreen(index);
           },
-          activeIcons: const [
-            Icon(Icons.rss_feed, color: Colors.deepPurple),
-            // Feed
-            Icon(Icons.search, color: Colors.deepPurple),
-            // Search
-            Icon(Icons.insert_drive_file, color: Colors.deepPurple),
-            // Documents
-            Icon(Icons.person, color: Colors.deepPurple),
+          activeIcons: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/feed.svg',
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    primary,
+                    BlendMode.srcIn, // Most common for solid coloring
+                  ),
+                ),
+
+                Text("Feed", style: r14),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/search.svg',
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    primary,
+                    BlendMode.srcIn, // Most common for solid coloring
+                  ),
+                ),
+
+                Text("Search", style: r14),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/folder.svg',
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    primary,
+                    BlendMode.srcIn, // Most common for solid coloring
+                  ),
+                ),
+
+                Text("Spaces", style: r14),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/me.svg',
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    primary,
+                    BlendMode.srcIn, // Most common for solid coloring
+                  ),
+                ),
+
+                Text("Me", style: r14),
+              ],
+            ),
           ],
-          inactiveIcons: const [
-            Text("Feed"),
-            Text("Search"),
-            Text("Docs"),
-            Text("Me"),
+          inactiveIcons: [
+            SvgPicture.asset(
+              'assets/icons/feed.svg',
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyMedium!.color!,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
+            SvgPicture.asset(
+              'assets/icons/search.svg',
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyMedium!.color!,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
+            SvgPicture.asset(
+              'assets/icons/folder.svg',
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyMedium!.color!,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
+            SvgPicture.asset(
+              'assets/icons/me.svg',
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyMedium!.color!,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
           ],
           color: Theme.of(context).scaffoldBackgroundColor,
           circleColor: Theme.of(context).scaffoldBackgroundColor,
