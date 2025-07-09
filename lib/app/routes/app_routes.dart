@@ -14,6 +14,7 @@ abstract class Routes {
   static const SEARCH = _Paths.SEARCH;
   static const SPACES = _Paths.SPACES;
   static const ME = _Paths.ME;
+  static const FEED_DETAILS = _Paths.FEED_DETAILS;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const SEARCH = '/search';
   static const SPACES = '/spaces';
   static const ME = '/me';
+  static const FEED_DETAILS = '/feed-details';
 }

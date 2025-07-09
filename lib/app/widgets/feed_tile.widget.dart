@@ -1,3 +1,4 @@
+import 'package:Intellio/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -27,7 +28,9 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
           children: [
             Row(
               children: [
-                const CircleAvatar(),
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).textTheme.bodySmall?.color,
+                ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,9 +38,6 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                     Text('Username > Comedy', style: r16.copyWith()),
                     Text(
                       'Posted at 1:14 PM',
-                      // style: r14.copyWith(
-                      //   color: Theme.of(context).textTheme.bodySmall?.color,
-                      //
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
@@ -110,30 +110,54 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
 
         // Like, Comment and Share
         Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Icon(Icons.favorite_border),
-                SizedBox(width: 8),
-                Text('20', style: r16.copyWith()),
+                Row(
+                  children: [
+                    Icon(Icons.favorite_border),
+                    SizedBox(width: 8),
+                    Text('20', style: r16.copyWith()),
+                  ],
+                ),
+                SizedBox(width: 24),
+                Row(
+                  children: [
+                    Icon(Icons.mode_comment_outlined),
+                    // SizedBox(width: 8),
+                    // Text('20', style: r16.copyWith()),
+                  ],
+                ),
+                SizedBox(width: 24),
+                Row(
+                  children: [
+                    Icon(Icons.share_outlined),
+                    // SizedBox(width: 8),
+                    // Text('20', style: r16.copyWith()),
+                  ],
+                ),
               ],
             ),
-            SizedBox(width: 24),
-            Row(
-              children: [
-                Icon(Icons.mode_comment_outlined),
-                // SizedBox(width: 8),
-                // Text('20', style: r16.copyWith()),
-              ],
-            ),
-            SizedBox(width: 24),
-            Row(
-              children: [
-                Icon(Icons.share_outlined),
-                // SizedBox(width: 8),
-                // Text('20', style: r16.copyWith()),
-              ],
+
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.FEED_DETAILS);
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'View Full Post',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  SizedBox(width: 8),
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 12,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

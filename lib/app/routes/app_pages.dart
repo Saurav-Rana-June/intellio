@@ -4,6 +4,8 @@ import '../modules/change_password/bindings/change_password_binding.dart';
 import '../modules/change_password/views/change_password_view.dart';
 import '../modules/feed/bindings/feed_binding.dart';
 import '../modules/feed/views/feed_view.dart';
+import '../modules/feed_details/bindings/feed_details_binding.dart';
+import '../modules/feed_details/views/feed_details_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -78,6 +80,11 @@ class AppPages {
       name: _Paths.ME,
       page: () => const MeView(),
       binding: MeBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEED_DETAILS,
+      page: () => FeedDetailsView(),
+      binding: FeedDetailsBinding(),
     ),
   ];
 }
