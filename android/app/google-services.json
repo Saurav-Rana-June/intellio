@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "634040716471",
+    "project_id": "intellio-7",
+    "storage_bucket": "intellio-7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:634040716471:android:e1a33e3cf1138bff889132",
+        "android_client_info": {
+          "package_name": "com.intellio.intellio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnYlo9GW9ytPXglv8jBXSFb2vF0N3FJfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
