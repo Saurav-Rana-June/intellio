@@ -10,14 +10,19 @@ class FeedView extends GetView<FeedController> {
 
   @override
   Widget build(BuildContext context) {
+    final feedController = Get.put(FeedController());
+
     return Scaffold(
       appBar: AppbarWidget(),
       drawer: Drawer(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListView.builder(
+          itemCount: feedController.feeds.value.length,
           physics: BouncingScrollPhysics(),
-          child: Column(children: [FeedTileWidget(), FeedTileWidget()]),
+          itemBuilder: (context, index) {
+            return FeedTileWidget(feed: controller.feeds[index]);
+          },
         ),
       ),
     );

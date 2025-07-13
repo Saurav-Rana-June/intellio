@@ -45,7 +45,7 @@ class LoginView extends GetView<LoginController> {
                 Text('Email', style: r16.copyWith()),
                 SizedBox(height: 8),
                 CustomFormField(
-                  controller: TextEditingController(),
+                  controller: controller.emailController,
                   hintText: 'Enter your email',
                   prefixIcon: Icons.mail_outline_outlined,
                   keyboardType: TextInputType.emailAddress,
@@ -62,7 +62,7 @@ class LoginView extends GetView<LoginController> {
                 Text('Password', style: r16.copyWith()),
                 SizedBox(height: 8),
                 CustomFormField(
-                  controller: TextEditingController(),
+                  controller: controller.passwordController,
                   hintText: 'Enter your password',
                   prefixIcon: Icons.lock_outline,
                   keyboardType: TextInputType.text,
@@ -98,14 +98,13 @@ class LoginView extends GetView<LoginController> {
                 ),
                 SizedBox(height: 16),
 
-                CustomPrimaryButton(
-                  label: "Login",
-                  onTap: () {
-                    Get.toNamed(
-                      '/otp',
-                      arguments: {'isFromForgotPassword': false},
-                    );
-                  },
+                Obx(
+                  () => CustomPrimaryButton(
+                    label: "Login",
+                    isLoading: controller.isLoading.value,
+                    isDisabled: controller.isLoading.value,
+                    onTap: controller.login,
+                  ),
                 ),
 
                 Row(

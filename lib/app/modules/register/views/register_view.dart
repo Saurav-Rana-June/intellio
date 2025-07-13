@@ -96,7 +96,7 @@ class RegisterView extends GetView<RegisterController> {
                 CustomPrimaryButton(
                   label: "Register",
                   onTap: () {
-                    Get.toNamed('/otp');
+                    // Get.toNamed('/otp');
                   },
                 ),
               ],

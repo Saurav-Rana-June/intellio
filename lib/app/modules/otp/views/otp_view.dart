@@ -12,10 +12,6 @@ class OtpView extends GetView<OtpController> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = Get.arguments as Map<String, dynamic>;
-    final bool isFromForgotPassword =
-        arguments['isFromForgotPassword'] ?? false;
-
     final defaultPinTheme = PinTheme(
       height: 55,
       width: 50,
@@ -85,12 +81,7 @@ class OtpView extends GetView<OtpController> {
                   // Button
                   CustomPrimaryButton(
                     label: "Verify OTP",
-                    onTap: () {
-                      if (isFromForgotPassword) {
-                        Get.toNamed('/change-password');
-                      }
-                      Get.toNamed('/home');
-                    },
+                    onTap: controller.verifyOtp,
                   ),
                 ],
               ),
