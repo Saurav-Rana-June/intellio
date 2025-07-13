@@ -233,7 +233,7 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
               const CircleAvatar(),
               const SizedBox(width: 16),
               SizedBox(
-                width: Get.width / 1.6,
+                width: Get.width / 1.8,
                 child: CustomFormField(
                   controller: controller.commentController,
                   hintText: 'Comment here...',

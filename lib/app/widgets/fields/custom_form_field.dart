@@ -51,9 +51,7 @@ class CustomFormField extends StatelessWidget {
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: r16.copyWith(
-              color: regular50
-            ),
+            hintStyle: r16.copyWith(color: regular50),
             prefixIcon: Icon(prefixIcon, color: regular50),
             suffixIcon:
                 isPassword
@@ -79,28 +77,38 @@ class CustomFormField extends StatelessWidget {
                       onPressed: onSuffixIconPressed,
                     )
                     : null,
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
+            filled: true,
+            fillColor: regular50.withValues(alpha: 0.3),
+            enabledBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
               borderSide: BorderSide(
                 width: 1.5,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(
-                width: 1.0,
                 color: Theme.of(context).dividerColor,
               ),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(width: 1.2, color: dangerColor),
+            focusedBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              borderSide: BorderSide(width: 1.5, color: primary),
             ),
-            errorStyle: r14.copyWith(color: dangerColor),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(width: 1.2, color: dangerColor),
+            errorBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              borderSide: BorderSide(width: 1.5, color: dangerColor),
+            ),
+            focusedErrorBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              borderSide: BorderSide(width: 1.5, color: dangerColor),
             ),
           ),
         );

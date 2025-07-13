@@ -4,7 +4,9 @@ import 'package:flutter_svg/svg.dart';
 import '../../infrastructure/theme/theme.dart';
 
 class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
-  const AppbarWidget({super.key});
+  String? appBarTitle;
+
+  AppbarWidget({super.key, this.appBarTitle});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -44,15 +46,21 @@ class AppbarWidget extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 SizedBox(width: 15),
-                SvgPicture.asset(
-                  'assets/images/logo.svg',
-                  width: 25,
-                  height: 25,
-                  colorFilter:
-                      Theme.of(context).brightness == Brightness.dark
-                          ? ColorFilter.mode(white, BlendMode.srcIn)
-                          : null,
-                ),
+
+                appBarTitle != null
+                    ? Text(
+                      appBarTitle ?? "Untitled",
+                      style: r20.copyWith(fontWeight: FontWeight.w600),
+                    )
+                    : SvgPicture.asset(
+                      'assets/images/logo.svg',
+                      width: 25,
+                      height: 25,
+                      colorFilter:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? ColorFilter.mode(white, BlendMode.srcIn)
+                              : null,
+                    ),
               ],
             ),
             InkWell(
