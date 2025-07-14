@@ -21,7 +21,7 @@ class FeedView extends GetView<FeedController> {
           itemCount: feedController.feeds.value.length,
           physics: BouncingScrollPhysics(),
           itemBuilder: (context, index) {
-            return FeedTileWidget(feed: controller.feeds[index]);
+            return FeedTileWidget(feed: feedController.feeds[index]);
           },
         ),
       ),

@@ -1,8 +1,10 @@
 import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../widgets/appbar.widget.dart';
 import '../../../widgets/fields/custom_form_field.dart';
 import '../controllers/spaces_controller.dart';
@@ -64,7 +66,9 @@ class spaceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Get.toNamed(Routes.SPACE_DETAILS);
+      },
       borderRadius: BorderRadius.circular(10),
       child: Container(
         // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -75,7 +79,15 @@ class spaceTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.folder),
+            SvgPicture.asset(
+              'assets/icons/folder.svg',
+              height: 22,
+              width: 22,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).textTheme.bodyMedium!.color!,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
             SizedBox(width: 16),
             Text("Comedy", style: r16.copyWith()),
           ],

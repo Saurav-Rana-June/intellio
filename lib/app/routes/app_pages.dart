@@ -20,6 +20,8 @@ import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
+import '../modules/space_details/bindings/space_details_binding.dart';
+import '../modules/space_details/views/space_details_view.dart';
 import '../modules/spaces/bindings/spaces_binding.dart';
 import '../modules/spaces/views/spaces_view.dart';
 
@@ -85,6 +87,11 @@ class AppPages {
       name: _Paths.FEED_DETAILS,
       page: () => FeedDetailsView(),
       binding: FeedDetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPACE_DETAILS,
+      page: () => const SpaceDetailsView(),
+      binding: SpaceDetailsBinding(),
     ),
   ];
 }
