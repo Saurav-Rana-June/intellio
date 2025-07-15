@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../controllers/me_controller.dart';
+import 'edit_profile_view.dart';
 
 class MeView extends GetView<MeController> {
   const MeView({super.key});
@@ -13,13 +14,25 @@ class MeView extends GetView<MeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppbarWidget(appBarTitle: "Me"),
-      body: Column(
-        children: [
-          buildTopSection(),
-          SizedBox(height: 16),
-          buildBodySection(context),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            buildTopSection(),
+            SizedBox(height: 16),
+            buildBodySection(context),
+          ],
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton(
+          shape: CircleBorder(),
+          onPressed: () {
+            Get.to(() => EditProfileView());
+          },
+          child: Icon(Icons.edit, color: Colors.white),
+          backgroundColor: primary,
+        ),
       ),
     );
   }
@@ -30,6 +43,18 @@ class MeView extends GetView<MeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Bio
+          Text('Bio', style: r18.copyWith(fontWeight: FontWeight.w600)),
+          SizedBox(height: 8),
+          buildProfileOptionTile(
+            "assets/icons/me.svg",
+            null,
+            "This is just a example bio... This is just an example bio and this is example. This is just an example bio and this is example. This is just an example bio and this is example.",
+          ),
+          SizedBox(height: 8),
+          Divider(),
+          SizedBox(height: 16),
+
           // Email
           Text('Email', style: r18.copyWith(fontWeight: FontWeight.w600)),
           SizedBox(height: 8),
@@ -48,7 +73,7 @@ class MeView extends GetView<MeController> {
           Divider(),
           SizedBox(height: 16),
 
-          // Email
+          // Mobile Number
           Text(
             'Mobile number',
             style: r18.copyWith(fontWeight: FontWeight.w600),
@@ -57,6 +82,19 @@ class MeView extends GetView<MeController> {
           buildProfileOptionTile("assets/icons/call.svg", null, "9027966724"),
           SizedBox(height: 8),
           Divider(),
+          SizedBox(height: 16),
+
+          // Address
+          Text('Address', style: r18.copyWith(fontWeight: FontWeight.w600)),
+          SizedBox(height: 8),
+          buildProfileOptionTile(
+            "assets/icons/building.svg",
+            null,
+            "Tehri Visthapit Colorny Shyampur Rishikesh, Uttarkhand 249204",
+          ),
+          SizedBox(height: 8),
+          Divider(),
+          SizedBox(height: 16),
         ],
       ),
     );
@@ -64,6 +102,7 @@ class MeView extends GetView<MeController> {
 
   Row buildProfileOptionTile(String? iconData, String? title, String? content) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           height: 45,
@@ -94,9 +133,12 @@ class MeView extends GetView<MeController> {
                           ),
                 )
                 : SizedBox(),
-            Text(
-              content ?? "--",
-              style: r16.copyWith(fontWeight: FontWeight.w500),
+            Container(
+              width: Get.width / 1.5,
+              child: Text(
+                content ?? "--",
+                style: r16.copyWith(fontWeight: FontWeight.w500),
+              ),
             ),
           ],
         ),
