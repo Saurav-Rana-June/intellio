@@ -175,6 +175,8 @@ class _EditProfileViewState extends State<EditProfileView> {
           },
         ),
         SizedBox(height: 24),
+        SizedBox(height: 24),
+        SizedBox(height: 24),
       ],
     );
   }

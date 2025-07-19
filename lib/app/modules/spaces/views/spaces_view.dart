@@ -39,6 +39,17 @@ class SpacesView extends GetView<SpacesController> {
           ],
         ),
       ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton(
+          shape: CircleBorder(),
+          onPressed: () {
+
+          },
+          child: Icon(Icons.add, color: Colors.white),
+          backgroundColor: primary,
+        ),
+      ),
     );
   }
 

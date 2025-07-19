@@ -30,6 +30,7 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
+  // Login Method
   Future<void> login() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       AppMethod.snackbar(
@@ -58,7 +59,7 @@ class LoginController extends GetxController {
     } catch (e) {
       AppMethod.snackbar(
         "Login Failed",
-        "Something gone wrong! $e",
+        "${e}",
         SnackBarType.ERROR,
       );
     } finally {
