@@ -41,69 +41,77 @@ class LoginView extends GetView<LoginController> {
                 ),
                 SizedBox(height: 24),
 
-                // email field
-                Text('Email', style: r16.copyWith()),
-                SizedBox(height: 8),
-                CustomFormField(
-                  controller: controller.emailController,
-                  hintText: 'Enter your email',
-                  prefixIcon: Icons.mail_outline_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 24),
+                Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // email field
+                      Text('Email', style: r16.copyWith()),
+                      SizedBox(height: 8),
+                      CustomFormField(
+                        controller: controller.emailController,
+                        hintText: 'Enter your email',
+                        prefixIcon: Icons.mail_outline_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 24),
 
-                // password field
-                Text('Password', style: r16.copyWith()),
-                SizedBox(height: 8),
-                CustomFormField(
-                  controller: controller.passwordController,
-                  hintText: 'Enter your password',
-                  prefixIcon: Icons.lock_outline,
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                  isPassword: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Get.toNamed(
-                          '/otp',
-                          arguments: {'isFromForgotPassword': true},
-                        );
-                      },
-                      child: Text(
-                        'Forgot Password ?',
-                        style: r16.copyWith(
-                          color: primary,
-                          fontWeight: FontWeight.w600,
+                      // password field
+                      Text('Password', style: r16.copyWith()),
+                      SizedBox(height: 8),
+                      CustomFormField(
+                        controller: controller.passwordController,
+                        hintText: 'Enter your password',
+                        prefixIcon: Icons.lock_outline,
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                        isPassword: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Get.toNamed(
+                                '/otp',
+                                arguments: {'isFromForgotPassword': true},
+                              );
+                            },
+                            child: Text(
+                              'Forgot Password ?',
+                              style: r16.copyWith(
+                                color: primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+
+                      Obx(
+                        () => CustomPrimaryButton(
+                          label: "Login",
+                          isLoading: controller.isLoading.value,
+                          isDisabled: controller.isLoading.value,
+                          onTap: controller.login,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-
-                Obx(
-                  () => CustomPrimaryButton(
-                    label: "Login",
-                    isLoading: controller.isLoading.value,
-                    isDisabled: controller.isLoading.value,
-                    onTap: controller.login,
+                    ],
                   ),
                 ),
 

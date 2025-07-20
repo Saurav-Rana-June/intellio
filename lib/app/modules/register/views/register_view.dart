@@ -39,65 +39,74 @@ class RegisterView extends GetView<RegisterController> {
                 ),
                 SizedBox(height: 24),
 
-                // name field
-                Text('Name', style: r16.copyWith()),
-                SizedBox(height: 8),
-                CustomFormField(
-                  controller: TextEditingController(),
-                  hintText: 'Enter your name',
-                  prefixIcon: Icons.person_2_outlined,
-                  keyboardType: TextInputType.name,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 24),
+                Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Name', style: r16.copyWith()),
+                      SizedBox(height: 8),
+                      CustomFormField(
+                        controller: controller.nameController,
+                        hintText: 'Enter your name',
+                        prefixIcon: Icons.person_2_outlined,
+                        keyboardType: TextInputType.name,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Name is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 24),
 
-                // email field
-                Text('Email', style: r16.copyWith()),
-                SizedBox(height: 8),
-                CustomFormField(
-                  controller: TextEditingController(),
-                  hintText: 'Enter your email',
-                  prefixIcon: Icons.mail_outline_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 24),
+                      // email field
+                      Text('Email', style: r16.copyWith()),
+                      SizedBox(height: 8),
+                      CustomFormField(
+                        controller: controller.emailController,
+                        hintText: 'Enter your email',
+                        prefixIcon: Icons.mail_outline_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 24),
 
-                // password field
-                Text('Password', style: r16.copyWith()),
-                SizedBox(height: 8),
-                CustomFormField(
-                  controller: TextEditingController(),
-                  hintText: 'Enter your password',
-                  prefixIcon: Icons.lock_outline,
-                  keyboardType: TextInputType.text,
-                  obscureText: true,
-                  isPassword: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    }
-                    return null;
-                  },
-                ),
+                      // password field
+                      Text('Password', style: r16.copyWith()),
+                      SizedBox(height: 8),
+                      CustomFormField(
+                        controller: controller.passwordController,
+                        hintText: 'Enter your password',
+                        prefixIcon: Icons.lock_outline,
+                        keyboardType: TextInputType.text,
+                        obscureText: true,
+                        isPassword: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password is required';
+                          }
+                          return null;
+                        },
+                      ),
 
-                SizedBox(height: 40),
+                      SizedBox(height: 40),
 
-                CustomPrimaryButton(
-                  label: "Register",
-                  onTap: () {
-                    // Get.toNamed('/otp');
-                  },
+                      Obx(
+                        () => CustomPrimaryButton(
+                          label: "Register",
+                          isLoading: controller.isLoading.value,
+                          isDisabled: controller.isLoading.value,
+                          onTap: () => controller.registerUser(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -13,6 +13,8 @@ class LoginController extends GetxController {
 
   final _authService = AuthService();
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void onInit() {
     super.onInit();
@@ -23,23 +25,16 @@ class LoginController extends GetxController {
     super.onReady();
   }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   super.onClose();
+  // }
 
   // Login Method
   Future<void> login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      AppMethod.snackbar(
-        "Credentials are required!",
-        "Email and Password are required",
-        SnackBarType.WARNING,
-      );
-      return;
-    }
+    if (!formKey.currentState!.validate()) return;
 
     try {
       isLoading.value = true;
@@ -49,19 +44,16 @@ class LoginController extends GetxController {
       );
 
       if (user != null) {
+        AppMethod().saveUserLocally(user);
         Get.toNamed(Routes.OTP, arguments: {'isFromForgotPassword': false});
         AppMethod.snackbar(
-          "Login Successful",
+          "Login Successfull",
           "User Authenticated successfully...",
           SnackBarType.SUCCESS,
         );
       }
     } catch (e) {
-      AppMethod.snackbar(
-        "Login Failed",
-        "${e}",
-        SnackBarType.ERROR,
-      );
+      AppMethod.snackbar("Login Failed", "${e}", SnackBarType.ERROR);
     } finally {
       isLoading.value = false;
     }

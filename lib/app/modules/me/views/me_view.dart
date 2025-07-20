@@ -13,11 +13,13 @@ class MeView extends GetView<MeController> {
 
   @override
   Widget build(BuildContext context) {
+    final meController = Get.put(MeController());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            buildTopSection(),
+            buildTopSection(context),
             SizedBox(height: 16),
             buildBodySection(context),
           ],
@@ -146,7 +148,7 @@ class MeView extends GetView<MeController> {
     );
   }
 
-  Container buildTopSection() {
+  Container buildTopSection(BuildContext context) {
     return Container(
       height: Get.height / 2.5,
       width: Get.width,
@@ -160,6 +162,18 @@ class MeView extends GetView<MeController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  controller.logout(context);
+                },
+                icon: Icon(Icons.logout, color: white),
+              ),
+            ],
+          ),
           CircleAvatar(radius: 60, child: Icon(Icons.person, size: 80)),
           SizedBox(height: 16),
           Text('Saurav Rana', style: h2.copyWith(color: white)),

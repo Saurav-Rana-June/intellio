@@ -41,9 +41,11 @@ class OtpView extends GetView<OtpController> {
         child: Column(
           children: [
             SizedBox(height: 16),
-            Text(
-              'We have shared 6-digit otp code to your registered email address sauravrana77074@gmail.com',
-              style: r16,
+            Obx(
+              () => Text(
+                'We have shared 6-digit otp code to your registered email address ${controller.registeredEmailAddress.value}',
+                style: r16,
+              ),
             ),
             SizedBox(height: 16),
 

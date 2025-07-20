@@ -16,6 +16,7 @@ abstract class Routes {
   static const ME = _Paths.ME;
   static const FEED_DETAILS = _Paths.FEED_DETAILS;
   static const SPACE_DETAILS = _Paths.SPACE_DETAILS;
+  static const SPLASH = _Paths.SPLASH;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const ME = '/me';
   static const FEED_DETAILS = '/feed-details';
   static const SPACE_DETAILS = '/space-details';
+  static const SPLASH = '/splash';
 }

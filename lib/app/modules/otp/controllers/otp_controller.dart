@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'dart:core';
 
+import 'package:Intellio/app/data/models/auth/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,14 +11,24 @@ import '../../../data/methods/app_methods.dart';
 
 class OtpController extends GetxController {
   final otpController = TextEditingController();
+  UserModel? userModel;
   final focusNode = FocusNode();
   RxBool isFromForgotPassword = false.obs;
+  RxString registeredEmailAddress = ''.obs;
 
   @override
   void onInit() {
     final arguments = Get.arguments as Map<String, dynamic>;
     isFromForgotPassword.value = arguments['isFromForgotPassword'] ?? false;
+    getRegisterdEmailAddress();
     super.onInit();
+  }
+
+  getRegisterdEmailAddress() {
+    userModel = AppMethod.getUserLocally();
+    if (userModel != null  && userModel!.email != null) {
+      registeredEmailAddress.value = userModel!.email ?? "";
+    }
   }
 
   @override

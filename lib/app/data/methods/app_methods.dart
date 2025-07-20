@@ -1,19 +1,21 @@
+import 'package:Intellio/app/data/models/auth/user_model.dart';
 import 'package:all/all.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../../infrastructure/theme/theme.dart';
 import '../enums/snackbar_enum.dart';
 
 class AppMethod {
   static void snackbar(
-      String title,
-      String message,
-      SnackBarType type, {
-        TextButton? actionButton,
-        Duration? duration = const Duration(seconds: 3),
-      }) {
+    String title,
+    String message,
+    SnackBarType type, {
+    TextButton? actionButton,
+    Duration? duration = const Duration(seconds: 3),
+  }) {
     Color color;
     IconData icon;
 
@@ -63,5 +65,25 @@ class AppMethod {
         ),
       ],
     );
+  }
+
+  Future<bool> saveUserLocally(UserModel user) async {
+    final box = GetStorage();
+    await box.write('user', user.toMap());
+    return true;
+  }
+
+  static UserModel? getUserLocally() {
+    final box = GetStorage();
+    Map<String, dynamic>? json = box.read('user');
+    if (json == null) {
+      return null;
+    }
+    return UserModel.fromMap(json);
+  }
+
+  removeUserLocally() async {
+    final box = GetStorage();
+    await box.remove('user');
   }
 }

@@ -24,13 +24,15 @@ import '../modules/space_details/bindings/space_details_binding.dart';
 import '../modules/space_details/views/space_details_view.dart';
 import '../modules/spaces/bindings/spaces_binding.dart';
 import '../modules/spaces/views/spaces_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.LOGIN;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -92,6 +94,11 @@ class AppPages {
       name: _Paths.SPACE_DETAILS,
       page: () => const SpaceDetailsView(),
       binding: SpaceDetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
     ),
   ];
 }
