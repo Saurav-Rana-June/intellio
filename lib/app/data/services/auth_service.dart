@@ -11,7 +11,10 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Login Method
-  Future<UserModel?> signInWithEmailPassword(String email, String password) async {
+  Future<UserModel?> signInWithEmailPassword(
+    String email,
+    String password,
+  ) async {
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -60,6 +63,61 @@ class AuthService {
         await _firestore.collection('users').doc(user.uid).set(model.toMap());
         return model;
       }
+    } on FirebaseAuthException catch (e) {
+      log.i(e);
+      switch (e.code) {
+        case 'email-already-in-use':
+          throw Exception('Email is already in use.');
+        case 'invalid-email':
+          throw Exception('Invalid email format.');
+        case 'weak-password':
+          throw Exception('Password is too weak.');
+        default:
+          throw Exception(e.message ?? 'Registration error.');
+      }
+    } catch (e) {
+      throw Exception('An unexpected error occurred: ${e.toString()}');
+    }
+  }
+
+  // Update user Method
+  Future updateUserDetails(UserModel userModel) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("No authenticated user.");
+      }
+
+      // Update email if it's changed
+      if (userModel.email != null && userModel.email != user.email) {
+        await user.updateEmail(userModel.email!);
+      }
+
+      // Update password if it's changed
+      if (userModel.password != null && userModel.password!.isNotEmpty) {
+        await user.updatePassword(userModel.password!);
+      }
+
+      // Update user info in Firestore
+      final updatedUser = UserModel(
+        uid: user.uid,
+        name: userModel.name,
+        email: userModel.email ?? user.email,
+        password: null,
+        role: userModel.role,
+        proffession: userModel.proffession,
+        emailPersonal: userModel.emailPersonal,
+        address: userModel.address,
+        bio: userModel.bio,
+        phoneNumber: userModel.phoneNumber,
+        photoUrl: userModel.photoUrl,
+      );
+
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .update(updatedUser.toMap());
+      return updatedUser;
     } on FirebaseAuthException catch (e) {
       log.i(e);
       switch (e.code) {

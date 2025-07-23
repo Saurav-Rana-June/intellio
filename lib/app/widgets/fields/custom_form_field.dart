@@ -52,7 +52,7 @@ class CustomFormField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText,
             hintStyle: r16.copyWith(color: regular50),
-            prefixIcon: Icon(prefixIcon, color: regular50),
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: regular50) : null,
             suffixIcon:
                 isPassword
                     ? IconButton(

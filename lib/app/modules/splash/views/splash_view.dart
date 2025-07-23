@@ -1,4 +1,5 @@
 // splash_view.dart
+import 'package:Intellio/app/widgets/loader.dart';
 import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,9 +37,7 @@ class SplashView extends StatelessWidget {
               ],
             ),
             SizedBox(height: 32),
-            CircularProgressIndicator(
-              color: Get.isDarkMode ? white : primary,
-            ),
+            Loader(colors: [primary, primary, primary]),
           ],
         ),
       ),

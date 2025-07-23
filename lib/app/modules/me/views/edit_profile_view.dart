@@ -1,51 +1,76 @@
+import 'dart:io';
+
+import 'package:Intellio/app/data/models/auth/user_model.dart';
+import 'package:Intellio/app/modules/me/controllers/me_controller.dart';
+import 'package:Intellio/app/widgets/modals/popup.modal.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../infrastructure/theme/theme.dart';
 import '../../../widgets/buttons/custom_primary_button.dart';
 import '../../../widgets/fields/custom_form_field.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({super.key});
+  UserModel? userModel;
+  EditProfileView({super.key, required this.userModel});
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
+  final MeController controller = Get.put(MeController());
+
+  @override
+  void initState() {
+    updateFields();
+  }
+
+  updateFields() {
+    controller.nameTextfield.text = widget.userModel?.name ?? "";
+    controller.officialEmailTextfield.text = widget.userModel?.email ?? "";
+    controller.proffessionTextfield.text = widget.userModel?.proffession ?? "";
+    controller.personalEmailTextfield.text =
+        widget.userModel?.emailPersonal ?? "";
+    controller.phoneNumberTextfield.text = widget.userModel?.phoneNumber ?? "";
+    controller.addressTextfield.text = widget.userModel?.address ?? "";
+    controller.bioTextfield.text = widget.userModel?.bio ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Edit Profile",
+          "Update Profile",
           style: r20.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  buildProfilePictureSection(),
-                  SizedBox(height: 24),
-                  buildEditProfileFields(),
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildProfilePictureSection(),
+                    SizedBox(height: 24),
+                    buildEditProfileFields(),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: CustomPrimaryButton(
-                label: "Register",
-                onTap: () {
-                  // Get.toNamed('/otp');
-                },
+              Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: CustomPrimaryButton(
+                  label: "Update Profile",
+                  onTap: () => controller.updateUserData(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -59,7 +84,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Name', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.nameTextfield,
           hintText: 'Enter your name',
           prefixIcon: Icons.person_2_outlined,
           keyboardType: TextInputType.name,
@@ -76,7 +101,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Proffession', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.proffessionTextfield,
           hintText: 'Enter your proffession',
           prefixIcon: Icons.person_2_outlined,
           keyboardType: TextInputType.text,
@@ -93,8 +118,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Offical Email', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
-          hintText: 'Enter your email',
+          controller: controller.officialEmailTextfield,
+          hintText: 'Enter your official email',
           prefixIcon: Icons.mail_outline_outlined,
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
@@ -110,7 +135,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Personal Email', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.personalEmailTextfield,
           hintText: 'Enter your email',
           prefixIcon: Icons.mail_outline_outlined,
           keyboardType: TextInputType.emailAddress,
@@ -127,7 +152,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Phone Number', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.phoneNumberTextfield,
           hintText: 'Enter your phone number',
           prefixIcon: Icons.phone_outlined,
           keyboardType: TextInputType.phone,
@@ -144,9 +169,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Address', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.addressTextfield,
           hintText: 'Enter your address',
-          prefixIcon: Icons.house_outlined,
           keyboardType: TextInputType.text,
           maxLines: 3,
           validator: (value) {
@@ -162,9 +186,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         Text('Bio', style: r16.copyWith()),
         SizedBox(height: 8),
         CustomFormField(
-          controller: TextEditingController(),
+          controller: controller.bioTextfield,
           hintText: 'Enter your bio',
-          prefixIcon: Icons.house_outlined,
           keyboardType: TextInputType.text,
           maxLines: 3,
           validator: (value) {
@@ -188,9 +211,24 @@ class _EditProfileViewState extends State<EditProfileView> {
         Stack(
           alignment: Alignment.bottomRight,
           children: [
-            CircleAvatar(radius: 50, backgroundColor: regular50),
+            Obx(
+              () => CircleAvatar(
+                radius: 50,
+                backgroundColor: regular50,
+                backgroundImage:
+                    controller.imageFile.value != null
+                        ? FileImage(File(controller.imageFile.value!.path))
+                        : null,
+                child:
+                    controller.imageFile.value == null
+                        ? Icon(Icons.person, size: 50)
+                        : null,
+              ),
+            ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                controller.showImageSourceActionSheet(context);
+              },
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(primary),
               ),
