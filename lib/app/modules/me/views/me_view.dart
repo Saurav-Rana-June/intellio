@@ -247,8 +247,8 @@ class _MeViewState extends State<MeView> {
 
   Container buildTopSection(BuildContext context) {
     return Container(
-      height: Get.height / 2.5,
       width: Get.width,
+      padding: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
         color: primary,
         borderRadius: BorderRadius.only(
@@ -256,76 +256,78 @@ class _MeViewState extends State<MeView> {
           bottomRight: Radius.circular(20),
         ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  controller.logout(context);
-                },
-                icon: Icon(Icons.logout, color: white),
-              ),
-            ],
-          ),
-          // CircleAvatar(radius: 60, child: Icon(Icons.person, size: 80)),
-          Obx(
-            () => CircleAvatar(
-              radius: 60,
-              backgroundColor: regular50,
-              backgroundImage:
-                  controller.userModel.value?.photoUrl != null &&
-                          controller.userModel.value!.photoUrl!.isNotEmpty
-                      ? FileImage(File(controller.userModel.value!.photoUrl!))
-                      : null,
-              child:
-                  controller.userModel.value?.photoUrl != null &&
-                          controller.userModel.value!.photoUrl!.isNotEmpty
-                      ? null
-                      : Icon(Icons.person, size: 80),
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            (controller.userModel.value?.name != null &&
-                    controller.userModel.value!.name!.trim().isNotEmpty)
-                ? controller.userModel.value!.name!
-                : "Undefined Name",
-            style: h2.copyWith(color: white),
-          ),
-          Text(
-            (controller.userModel.value?.proffession != null &&
-                    controller.userModel.value!.proffession!.trim().isNotEmpty)
-                ? controller.userModel.value!.proffession!
-                : "Undefined Role",
-            style: r14.copyWith(color: white),
-          ),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              buildProfileIcon("assets/icons/mail.svg"),
-              SizedBox(width: 16),
-              buildProfileIcon("assets/icons/call.svg"),
-              SizedBox(width: 8),
-              Container(
-                height: 40,
-                child: VerticalDivider(
-                  color: Colors.white,
-                  thickness: 1,
-                  width: 20,
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    controller.logout(context);
+                  },
+                  icon: Icon(Icons.logout, color: white),
                 ),
+              ],
+            ),
+            Obx(
+              () => CircleAvatar(
+                radius: 60,
+                backgroundColor: regular50,
+                backgroundImage:
+                    controller.userModel.value?.photoUrl != null &&
+                            controller.userModel.value!.photoUrl!.isNotEmpty
+                        ? FileImage(File(controller.userModel.value!.photoUrl!))
+                        : null,
+                child:
+                    controller.userModel.value?.photoUrl != null &&
+                            controller.userModel.value!.photoUrl!.isNotEmpty
+                        ? null
+                        : Icon(Icons.person, size: 80),
               ),
-              SizedBox(width: 8),
-              buildProfileIcon("assets/icons/whatsapp.svg"),
-              SizedBox(width: 16),
-              buildProfileIcon("assets/icons/star.svg"),
-            ],
-          ),
-        ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              (controller.userModel.value?.name != null &&
+                      controller.userModel.value!.name!.trim().isNotEmpty)
+                  ? controller.userModel.value!.name!
+                  : "Undefined Name",
+              style: h2.copyWith(color: white),
+            ),
+            Text(
+              (controller.userModel.value?.proffession != null &&
+                      controller.userModel.value!.proffession!
+                          .trim()
+                          .isNotEmpty)
+                  ? controller.userModel.value!.proffession!
+                  : "Undefined Role",
+              style: r14.copyWith(color: white),
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildProfileIcon("assets/icons/mail.svg"),
+                SizedBox(width: 16),
+                buildProfileIcon("assets/icons/call.svg"),
+                SizedBox(width: 8),
+                Container(
+                  height: 40,
+                  child: VerticalDivider(
+                    color: Colors.white,
+                    thickness: 1,
+                    width: 20,
+                  ),
+                ),
+                SizedBox(width: 8),
+                buildProfileIcon("assets/icons/whatsapp.svg"),
+                SizedBox(width: 16),
+                buildProfileIcon("assets/icons/star.svg"),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

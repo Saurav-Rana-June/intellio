@@ -5,6 +5,7 @@ import 'package:Intellio/app/modules/me/controllers/me_controller.dart';
 import 'package:Intellio/app/widgets/modals/popup.modal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../infrastructure/theme/theme.dart';
 import '../../../widgets/buttons/custom_primary_button.dart';
@@ -35,6 +36,10 @@ class _EditProfileViewState extends State<EditProfileView> {
     controller.phoneNumberTextfield.text = widget.userModel?.phoneNumber ?? "";
     controller.addressTextfield.text = widget.userModel?.address ?? "";
     controller.bioTextfield.text = widget.userModel?.bio ?? "";
+    controller.imageFile.value =
+        widget.userModel?.photoUrl != null
+            ? XFile(widget.userModel!.photoUrl!)
+            : null;
   }
 
   @override
