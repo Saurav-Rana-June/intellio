@@ -24,7 +24,16 @@ class CustomPopupModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: title != null ? Text(title!, style: h2.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color),) : null,
+      title:
+          title != null
+              ? Text(
+                title!,
+                style: r20.copyWith(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+              : null,
       content: content,
       actions: actions,
       contentPadding: contentPadding ?? const EdgeInsets.all(20),
