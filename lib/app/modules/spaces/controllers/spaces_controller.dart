@@ -1,14 +1,28 @@
 import 'dart:io';
 
+import 'package:Intellio/app/data/enums/snackbar_enum.dart';
+import 'package:Intellio/app/data/methods/app_methods.dart';
+import 'package:Intellio/app/data/models/space_models/space_model.dart';
+import 'package:Intellio/app/data/services/spaces_service.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SpacesController extends GetxController {
+  final formKey = GlobalKey<FormState>();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  final TextEditingController spaceTextController = TextEditingController();
   final TextEditingController genreTextController = TextEditingController();
 
+  final ValueNotifier<bool> spaceTypeToggleController = ValueNotifier<bool>(
+    false,
+  );
+
   RxBool isPrivate = false.obs;
+  RxBool loading = false.obs;
 
   RxList<String> genreList =
       [
@@ -28,11 +42,25 @@ class SpacesController extends GetxController {
       ['Link', 'Video', 'Image', 'Audio', 'PDF', 'Zip Archive'].obs;
 
   RxList<File> uploadedFiles = <File>[].obs;
+  RxList<SpaceModel?> spaceModelList = <SpaceModel?>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+    getSpaces();
     genreTextController.addListener(onSearchChanged);
+
+    // Listen to notifier and update RxBool
+    spaceTypeToggleController.addListener(() {
+      isPrivate.value = spaceTypeToggleController.value;
+    });
+
+    // Optional: Keep RxBool in sync too
+    ever(isPrivate, (value) {
+      if (spaceTypeToggleController.value != value) {
+        spaceTypeToggleController.value = value;
+      }
+    });
   }
 
   @override
@@ -51,6 +79,64 @@ class SpacesController extends GetxController {
           genreList
               .where((genre) => genre.toLowerCase().contains(query))
               .toList();
+    }
+  }
+
+  getSpaces() async {
+    loading.value = true;
+    final String? uid = auth.currentUser?.uid;
+    if (uid != null) {
+      SpaceService()
+          .getSpacesByUser(uid)
+          .then((value) {
+            loading.value = false;
+            if (value != null) {
+              spaceModelList.value = value;
+            }
+          })
+          .catchError((error, stackTrace) {
+            loading.value = false;
+            AppMethod.snackbar(
+              "Failed to get spaces",
+              "${error}",
+              SnackBarType.ERROR,
+            );
+          });
+    } else {
+      loading.value = false;
+    }
+  }
+
+  void onAddSpace() async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final id = AppMethod().generateUniqueIdFromText(spaceTextController.text);
+      final String? uid = auth.currentUser?.uid;
+      final spaceReq = SpaceService().createSpace(
+        SpaceModel(
+          id: id,
+          uid: uid,
+          isPrivate: isPrivate.value,
+          name: spaceTextController.text,
+        ),
+      );
+
+      if (spaceReq != null) {
+        Get.back();
+        spaceTextController.clear();
+        isPrivate.value = false;
+        getSpaces();
+        AppMethod.snackbar(
+          "Creation Successfull",
+          "Space created successfully...",
+          SnackBarType.SUCCESS,
+        );
+      }
+    } catch (e) {
+      Get.back();
+      spaceTextController.clear();
+      AppMethod.snackbar("Creation Failed", "${e}", SnackBarType.ERROR);
     }
   }
 

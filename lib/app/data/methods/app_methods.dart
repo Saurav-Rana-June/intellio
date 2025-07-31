@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Intellio/app/data/models/auth/user_model.dart';
 import 'package:all/all.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,5 +87,20 @@ class AppMethod {
   removeUserLocally() async {
     final box = GetStorage();
     await box.remove('user');
+  }
+
+// Generate random
+  String generateUniqueIdFromText(String input, {int suffixLength = 8}) {
+    final random = Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()_-+=';
+
+    final lowerInput = input.toLowerCase().replaceAll(RegExp(r'\s+'), '');
+
+    String randomSuffix =
+        List.generate(suffixLength, (index) {
+          return chars[random.nextInt(chars.length)];
+        }).join();
+
+    return '$lowerInput\_$randomSuffix';
   }
 }
