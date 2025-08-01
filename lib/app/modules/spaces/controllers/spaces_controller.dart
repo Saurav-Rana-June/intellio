@@ -116,6 +116,15 @@ class SpacesController extends GetxController {
   void onAddSpace() async {
     if (!formKey.currentState!.validate()) return;
 
+    if (genreList.contains(spaceTextController.text)) {
+      AppMethod.snackbar(
+        "Space Already exists",
+        "Please choose different name for this.",
+        SnackBarType.ERROR,
+      );
+      return;
+    }
+
     try {
       final id = AppMethod().generateUniqueIdFromText(spaceTextController.text);
       final currentUser = AppMethod.getUserLocally();
