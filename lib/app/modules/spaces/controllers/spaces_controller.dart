@@ -23,17 +23,9 @@ class SpacesController extends GetxController {
 
   RxBool isPrivate = false.obs;
   RxBool loading = false.obs;
+  RxBool isAllSpacesActive = true.obs;
 
-  RxList<String> genreList =
-      [
-        'Comedy',
-        'Science',
-        'Horror',
-        'Adventure',
-        'Entertainment',
-        'Music',
-        'Memes',
-      ].obs;
+  final RxList<String> genreList = <String>[].obs;
 
   final RxList<String> filteredGenres = <String>[].obs;
 
@@ -42,7 +34,8 @@ class SpacesController extends GetxController {
       ['Link', 'Video', 'Image', 'Audio', 'PDF', 'Zip Archive'].obs;
 
   RxList<File> uploadedFiles = <File>[].obs;
-  RxList<SpaceModel?> spaceModelList = <SpaceModel?>[].obs;
+  RxList<SpaceModel?> personalSpacesList = <SpaceModel?>[].obs;
+  RxList<SpaceModel?> allSpacesList = <SpaceModel?>[].obs;
 
   @override
   void onInit() {
@@ -84,14 +77,27 @@ class SpacesController extends GetxController {
 
   getSpaces() async {
     loading.value = true;
-    final String? uid = auth.currentUser?.uid;
-    if (uid != null) {
+    final currentUser = AppMethod.getUserLocally();
+    if (currentUser != null && currentUser.uid != null) {
       SpaceService()
-          .getSpacesByUser(uid)
+          .getSpacesByUser(currentUser.uid ?? "--")
           .then((value) {
             loading.value = false;
             if (value != null) {
-              spaceModelList.value = value;
+              // Saving all spaces
+              allSpacesList.value = value;
+
+              // Filtering only user's created space
+              final filteredSpaces =
+                  value.where((space) => space.uid == currentUser.uid).toList();
+              personalSpacesList.value = filteredSpaces;
+
+              // Saving the name of all spaces in list
+              genreList.value =
+                  value
+                      .where((space) => space.name != null)
+                      .map((space) => space.name!)
+                      .toList();
             }
           })
           .catchError((error, stackTrace) {
@@ -112,26 +118,29 @@ class SpacesController extends GetxController {
 
     try {
       final id = AppMethod().generateUniqueIdFromText(spaceTextController.text);
-      final String? uid = auth.currentUser?.uid;
-      final spaceReq = SpaceService().createSpace(
-        SpaceModel(
-          id: id,
-          uid: uid,
-          isPrivate: isPrivate.value,
-          name: spaceTextController.text,
-        ),
-      );
+      final currentUser = AppMethod.getUserLocally();
 
-      if (spaceReq != null) {
-        Get.back();
-        spaceTextController.clear();
-        isPrivate.value = false;
-        getSpaces();
-        AppMethod.snackbar(
-          "Creation Successfull",
-          "Space created successfully...",
-          SnackBarType.SUCCESS,
+      if (currentUser != null && currentUser.uid != null) {
+        final spaceReq = SpaceService().createSpace(
+          SpaceModel(
+            id: id,
+            uid: currentUser.uid,
+            isPrivate: isPrivate.value,
+            name: spaceTextController.text,
+          ),
         );
+
+        if (spaceReq != null) {
+          Get.back();
+          spaceTextController.clear();
+          isPrivate.value = false;
+          getSpaces();
+          AppMethod.snackbar(
+            "Creation Successfull",
+            "Space created successfully...",
+            SnackBarType.SUCCESS,
+          );
+        }
       }
     } catch (e) {
       Get.back();

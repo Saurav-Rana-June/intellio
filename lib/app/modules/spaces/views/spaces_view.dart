@@ -22,7 +22,7 @@ class SpacesView extends GetView<SpacesController> {
     final controller = Get.put(SpacesController());
 
     return Scaffold(
-      appBar: AppbarWidget(appBarTitle: "Your Spaces"),
+      appBar: AppbarWidget(appBarTitle: "Spaces"),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -30,7 +30,7 @@ class SpacesView extends GetView<SpacesController> {
             const SizedBox(height: 16),
             CustomFormField(
               controller: TextEditingController(),
-              hintText: 'Search for your spaces...',
+              hintText: 'Search for spaces...',
               prefixIcon: Icons.search,
               keyboardType: TextInputType.text,
               validator: (value) {
@@ -39,6 +39,80 @@ class SpacesView extends GetView<SpacesController> {
                 }
                 return null;
               },
+            ),
+            const SizedBox(height: 16),
+
+            Obx(
+              () => Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      controller.isAllSpacesActive.value = true;
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 2,
+                            color:
+                                controller.isAllSpacesActive.value
+                                    ? primary
+                                    : Colors.transparent,
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Center(
+                        child: Text(
+                          'All Spaces',
+                          style: r18.copyWith(
+                            color:
+                                controller.isAllSpacesActive.value
+                                    ? null
+                                    : regular50,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      controller.isAllSpacesActive.value = false;
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 2,
+                            color:
+                                controller.isAllSpacesActive.value
+                                    ? Colors.transparent
+                                    : primary,
+                          ),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Center(
+                        child: Text(
+                          'My Spaces',
+                          style: r18.copyWith(
+                            color:
+                                controller.isAllSpacesActive.value
+                                    ? regular50
+                                    : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
 
@@ -53,7 +127,9 @@ class SpacesView extends GetView<SpacesController> {
                           ],
                         ),
                       )
-                      : buildSpacesGrid(context),
+                      : controller.isAllSpacesActive.value
+                      ? buildAllSpacesGrid(context)
+                      : buildMySpacesGrid(context),
             ),
           ],
         ),
@@ -98,10 +174,7 @@ class SpacesView extends GetView<SpacesController> {
               'assets/icons/feed_post.svg',
               height: 20,
               width: 20,
-              colorFilter: ColorFilter.mode(
-                primary,
-                BlendMode.srcIn, // Most common for solid coloring
-              ),
+              colorFilter: ColorFilter.mode(primary, BlendMode.srcIn),
             ),
             label: 'Add Feed',
             labelStyle: r16,
@@ -193,23 +266,66 @@ class SpacesView extends GetView<SpacesController> {
     );
   }
 
-  Expanded buildSpacesGrid(BuildContext context) {
+  Expanded buildAllSpacesGrid(BuildContext context) {
     return Expanded(
       child:
-          controller.spaceModelList != null &&
-                  controller.spaceModelList.isNotEmpty
+          controller.allSpacesList != null &&
+                  controller.allSpacesList.isNotEmpty
               ? GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Number of columns
-                  crossAxisSpacing: 20.0,
-                  mainAxisSpacing: 20.0,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
                   childAspectRatio: 2.9,
                 ),
-                itemCount: controller.spaceModelList.length, // Number of items
+                itemCount: controller.allSpacesList.length, // Number of items
                 itemBuilder: (context, index) {
                   return spaceTile(
-                    spaceTitle: controller.spaceModelList[index]!.name,
-                    isPrivate: controller.spaceModelList[index]!.isPrivate,
+                    spaceTitle: controller.allSpacesList[index]!.name,
+                    isPrivate: controller.allSpacesList[index]!.isPrivate,
+                  );
+                },
+              )
+              : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/folder.svg',
+                    height: 50,
+                    width: 50,
+                    colorFilter: ColorFilter.mode(
+                      regular50,
+                      BlendMode.srcIn, // Most common for solid coloring
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    "Oops! currently there aren't any spaces...",
+                    style: r14.copyWith(color: regular50),
+                  ),
+                ],
+              ),
+    );
+  }
+
+  Expanded buildMySpacesGrid(BuildContext context) {
+    return Expanded(
+      child:
+          controller.personalSpacesList != null &&
+                  controller.personalSpacesList.isNotEmpty
+              ? GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Number of columns
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 2.9,
+                ),
+                itemCount:
+                    controller.personalSpacesList.length, // Number of items
+                itemBuilder: (context, index) {
+                  return spaceTile(
+                    spaceTitle: controller.personalSpacesList[index]!.name,
+                    isPrivate: controller.personalSpacesList[index]!.isPrivate,
                   );
                 },
               )
@@ -273,8 +389,8 @@ class spaceTile extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16),
-                Container(
-                  width: 80,
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 80),
                   child: Text(
                     spaceTitle ?? "--",
                     style: r16.copyWith(),
