@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/models/space_models/space_model.dart';
+import 'package:Intellio/app/data/services/feed_service.dart';
 import 'package:Intellio/app/data/services/spaces_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,12 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../data/models/feed_models/feed_model.dart';
+
 class SpacesController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   final TextEditingController spaceTextController = TextEditingController();
   final TextEditingController genreTextController = TextEditingController();
+  final TextEditingController feedTitleController = TextEditingController();
+  final TextEditingController feedDescriptionController =
+      TextEditingController();
+  final TextEditingController feedLinkController = TextEditingController();
 
   final ValueNotifier<bool> spaceTypeToggleController = ValueNotifier<bool>(
     false,
@@ -202,5 +209,43 @@ class SpacesController extends GetxController {
     if (result != null) {
       uploadedFiles.addAll(result.paths.map((e) => File(e!)));
     }
+  }
+
+  void onAddFeed() async {
+    final uploadedUrls = <String>[];
+    final postId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    for (final file in uploadedFiles) {
+      final extension = file.path.split('.').last;
+      final url = await FeedService.uploadFeedFile(
+        file: file,
+        postId: postId,
+        extension: extension,
+      );
+      if (url != null) {
+        uploadedUrls.add(url);
+      } else {
+        AppMethod.snackbar(
+          "Upload Failed",
+          "Unable to upload media...",
+          SnackBarType.ERROR,
+        );
+      }
+    }
+
+    await FeedService.addFeed(
+      FeedTileModel(
+        userProfileImage: '',
+        userName: 'Test Name',
+        genre: genreTextController.text.trim(),
+        postedTime: DateTime.now().toIso8601String(),
+        feedTitle: feedTitleController.text,
+        feedDescription: feedDescriptionController.text,
+        currentLikes: '0',
+        currentComments: '0',
+        currentShare: '0',
+        postImage: uploadedUrls,
+      ),
+    );
   }
 }

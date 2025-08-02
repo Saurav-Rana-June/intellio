@@ -19,7 +19,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'The view from the Swiss Alps is breathtaking! Highly recommend the Domhütte route.',
         ),
         FeedTileModel(
@@ -36,7 +36,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Nothing beats a hot bowl of ramen at Ichiran Shibuya after a long day.',
         ),
         FeedTileModel(
@@ -53,7 +53,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Just wrapped up my 5AM workout. Remember, discipline beats motivation!',
         ),
         FeedTileModel(
@@ -70,7 +70,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Captured this magical sunset while wandering the cliffs of Oia.',
         ),
         FeedTileModel(
@@ -87,7 +87,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Testing the camera and performance today. Impressed so far!',
         ),
         FeedTileModel(
@@ -104,7 +104,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Inspired by Van Gogh’s brush strokes and summer fields.',
         ),
         FeedTileModel(
@@ -121,7 +121,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent: 'Woke up to the sound of birds and the scent of pine.',
+          feedDescription: 'Woke up to the sound of birds and the scent of pine.',
         ),
         FeedTileModel(
           userProfileImage: 'https://example.com/user8.png',
@@ -137,7 +137,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Game-changer in building consistent habits. Highly recommend!',
         ),
         FeedTileModel(
@@ -154,7 +154,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent:
+          feedDescription:
               'Took her for a spin on the track today. Unreal power and handling!',
         ),
         FeedTileModel(
@@ -171,7 +171,7 @@ class FeedController extends GetxController {
             'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Alpenrelief_01.jpg/330px-Alpenrelief_01.jpg',
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAIQy17-miPA9oYxbT1xqXuD274pdfLaCj8w&s',
           ],
-          feedContent: 'Gave Luna a tuna cake and she loved it!',
+          feedDescription: 'Gave Luna a tuna cake and she loved it!',
         ),
       ].obs;
 }

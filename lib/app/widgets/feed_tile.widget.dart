@@ -175,12 +175,12 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
           height: 250,
           child: PageView.builder(
             controller: pageController,
-            itemCount: widget.feed.postImage.length,
+            itemCount: widget.feed.postImage!.length,
             itemBuilder: (context, index) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  widget.feed.postImage[index],
+                  widget.feed.postImage![index],
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
@@ -189,11 +189,11 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
           ),
         ),
         const SizedBox(height: 8),
-        if (widget.feed.postImage.length > 1)
+        if (widget.feed.postImage!.length > 1)
           Obx(() {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(widget.feed.postImage.length, (index) {
+              children: List.generate(widget.feed.postImage!.length, (index) {
                 bool isActive = index == currentPage.value;
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -211,9 +211,5 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
           }),
       ],
     );
-    // return Obx(() {
-    //   if (widget.feed.postImage.isEmpty) return SizedBox.shrink();
-    //   return
-    // });
   }
 }

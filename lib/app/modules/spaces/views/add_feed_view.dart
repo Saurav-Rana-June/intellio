@@ -3,10 +3,15 @@ import 'package:Intellio/app/widgets/buttons/custom_primary_button.dart';
 import 'package:Intellio/app/widgets/fields/custom_dropdown_field.dart';
 import 'package:Intellio/app/widgets/fields/custom_form_field.dart';
 import 'package:Intellio/infrastructure/theme/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+
+import '../../../data/models/auth/user_model.dart';
+import '../../../data/models/feed_models/feed_model.dart';
+import '../../../data/services/auth_service.dart';
 
 class AddFeedView extends StatefulWidget {
   const AddFeedView({super.key});
@@ -36,7 +41,22 @@ class _AddFeedViewState extends State<AddFeedView> {
       bottomNavigationBar: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: CustomPrimaryButton(label: "Add", onTap: () {}),
+        child: CustomPrimaryButton(
+          label: "Add",
+          onTap: () async {
+            spacesController.onAddFeed();
+            // final String? uid = FirebaseAuth.instance.currentUser?.uid;
+
+            // if (uid != null) {
+            //   final UserModel? user = await AuthService().getUserByUid(uid);
+
+            //   spacesController.addFeed(title: spacesController.uploadedFiles,
+            //       content: content,
+            //       userName: userName,
+            //       userProfileImage: userProfileImage)
+            // }
+          },
+        ),
       ),
     );
   }

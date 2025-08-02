@@ -1,14 +1,19 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:Intellio/app/data/models/auth/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:logger/logger.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class AuthService {
   Logger log = Logger();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final fb_auth.FirebaseAuth _auth = fb_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final _supabase = supabase.Supabase.instance.client;
+
+  static final _profileBucket = _supabase.storage.from('user-profile-images');
 
   // Login Method
   Future<UserModel?> signInWithEmailPassword(
@@ -20,13 +25,13 @@ class AuthService {
         email: email,
         password: password,
       );
-      final user = credential.user;
+      final fb_auth.User? user = credential.user;
 
       if (user != null) {
-        final userModal = getUserByUid(user.uid);
-        return userModal;
+        final userModel = await getUserByUid(user.uid);
+        return userModel;
       }
-    } on FirebaseAuthException catch (e) {
+    } on fb_auth.FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
           throw Exception('No user found for that email.');
@@ -40,17 +45,18 @@ class AuthService {
     } catch (e) {
       throw Exception('An unexpected error occurred: ${e.toString()}');
     }
+    return null;
   }
 
   // Register Method
-  Future createUserWithEmailPassword(UserModel userModel) async {
+  Future<UserModel?> createUserWithEmailPassword(UserModel userModel) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
         email: userModel.email ?? "",
         password: userModel.password ?? "",
       );
 
-      final user = credential.user;
+      final fb_auth.User? user = credential.user;
 
       if (user != null) {
         final model = UserModel(
@@ -63,7 +69,7 @@ class AuthService {
         await _firestore.collection('users').doc(user.uid).set(model.toMap());
         return model;
       }
-    } on FirebaseAuthException catch (e) {
+    } on fb_auth.FirebaseAuthException catch (e) {
       log.i(e);
       switch (e.code) {
         case 'email-already-in-use':
@@ -78,12 +84,32 @@ class AuthService {
     } catch (e) {
       throw Exception('An unexpected error occurred: ${e.toString()}');
     }
+    return null;
+  }
+
+  // Saving Profile Image to Supabase
+  static Future<String?> uploadUserProfileImage(
+    File file,
+    String userId,
+  ) async {
+    try {
+      final filePath = 'profile_$userId.jpg';
+      await _profileBucket.upload(
+        filePath,
+        file,
+        fileOptions: const supabase.FileOptions(upsert: true),
+      );
+      return _profileBucket.getPublicUrl(filePath);
+    } catch (e) {
+      print('Failed to upload user profile image: $e');
+      return null;
+    }
   }
 
   // Update user Method
-  Future updateUserDetails(UserModel userModel) async {
+  Future<UserModel?> updateUserDetails(UserModel userModel) async {
     try {
-      final user = _auth.currentUser;
+      final fb_auth.User? user = _auth.currentUser;
       if (user == null) {
         throw Exception("No authenticated user.");
       }
@@ -118,7 +144,7 @@ class AuthService {
           .doc(user.uid)
           .update(updatedUser.toMap());
       return updatedUser;
-    } on FirebaseAuthException catch (e) {
+    } on fb_auth.FirebaseAuthException catch (e) {
       log.i(e);
       switch (e.code) {
         case 'email-already-in-use':
@@ -135,6 +161,7 @@ class AuthService {
     }
   }
 
+  // Get user by uid
   Future<UserModel?> getUserByUid(String uid) async {
     try {
       DocumentSnapshot doc =
@@ -155,7 +182,7 @@ class AuthService {
     await _auth.signOut();
   }
 
-  User? get currentUser => _auth.currentUser;
+  fb_auth.User? get currentUser => _auth.currentUser;
 
-  Stream<User?> authStateChanges() => _auth.authStateChanges();
+  Stream<fb_auth.User?> authStateChanges() => _auth.authStateChanges();
 }

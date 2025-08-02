@@ -27,6 +27,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   file_picker: ^10.2.0
   flutter_advanced_switch: ^3.1.0
+  supabase_flutter: ^2.9.1
 
 dev_dependencies:
   flutter_test:
