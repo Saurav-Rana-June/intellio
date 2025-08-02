@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url:'https://rzfdpneoybgnkjgeznsz.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6ZmRwbmVveWJnbmtqZ2V6bnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNDgwMTAsImV4cCI6MjA2OTYyNDAxMH0.flnyjlBQ5V4J7XWQI4jwnEgqziC1qRHk0ZM1RF23SCI'
+  );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
   runApp(

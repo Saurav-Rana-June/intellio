@@ -22,4 +22,34 @@ class FeedTileModel {
     required this.postImage,
     this.feedContent,
   });
+
+  factory FeedTileModel.fromMap(Map<String, dynamic> map) {
+    return FeedTileModel(
+      userProfileImage: map['userProfileImage'] as String?,
+      userName: map['userName'] as String?,
+      genre: map['genre'] as String?,
+      postedTime: map['postedTime'] as String?,
+      feedTitle: map['feedTitle'] as String?,
+      feedContent: map['feedContent'] as String?,
+      currentLikes: map['currentLikes'] as String?,
+      currentComments: map['currentComments'] as String?,
+      currentShare: map['currentShare'] as String?,
+      postImage: List<String>.from(map['postImage'] ?? []),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userProfileImage': userProfileImage,
+      'userName': userName,
+      'genre': genre,
+      'postedTime': postedTime,
+      'feedTitle': feedTitle,
+      'feedContent': feedContent,
+      'currentLikes': currentLikes,
+      'currentComments': currentComments,
+      'currentShare': currentShare,
+      'postImage': postImage,
+    };
+  }
 }
