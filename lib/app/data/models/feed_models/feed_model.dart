@@ -4,23 +4,25 @@ class FeedTileModel {
   final String? genre;
   final String? postedTime;
   final String? feedTitle;
-  final String? feedContent;
+  final String? feedDescription;
+  final String? feedType;
   final String? currentLikes;
   final String? currentComments;
   final String? currentShare;
-  final List<String> postImage;
+  final List<String>? postImage;
 
   FeedTileModel({
-    required this.userProfileImage,
-    required this.userName,
-    required this.genre,
-    required this.postedTime,
-    required this.feedTitle,
-    required this.currentLikes,
-    required this.currentComments,
-    required this.currentShare,
-    required this.postImage,
-    this.feedContent,
+    this.userProfileImage,
+    this.userName,
+    this.genre,
+    this.postedTime,
+    this.feedTitle,
+    this.feedType,
+    this.currentLikes,
+    this.currentComments,
+    this.currentShare,
+    this.postImage,
+    this.feedDescription,
   });
 
   factory FeedTileModel.fromMap(Map<String, dynamic> map) {
@@ -30,7 +32,7 @@ class FeedTileModel {
       genre: map['genre'] as String?,
       postedTime: map['postedTime'] as String?,
       feedTitle: map['feedTitle'] as String?,
-      feedContent: map['feedContent'] as String?,
+      feedDescription: map['feedDescription'] as String?,
       currentLikes: map['currentLikes'] as String?,
       currentComments: map['currentComments'] as String?,
       currentShare: map['currentShare'] as String?,
@@ -45,7 +47,7 @@ class FeedTileModel {
       'genre': genre,
       'postedTime': postedTime,
       'feedTitle': feedTitle,
-      'feedContent': feedContent,
+      'feedDescription': feedDescription,
       'currentLikes': currentLikes,
       'currentComments': currentComments,
       'currentShare': currentShare,

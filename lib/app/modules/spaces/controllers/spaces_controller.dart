@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/models/space_models/space_model.dart';
+import 'package:Intellio/app/data/services/feed_service.dart';
 import 'package:Intellio/app/data/services/spaces_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,8 +12,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/models/feed_models/feed_model.dart';
-import '../../../data/services/firestore_api.dart';
-import '../../../data/services/supabase_storage_api.dart';
 
 class SpacesController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -20,6 +19,10 @@ class SpacesController extends GetxController {
 
   final TextEditingController spaceTextController = TextEditingController();
   final TextEditingController genreTextController = TextEditingController();
+  final TextEditingController feedTitleController = TextEditingController();
+  final TextEditingController feedDescriptionController =
+      TextEditingController();
+  final TextEditingController feedLinkController = TextEditingController();
 
   final ValueNotifier<bool> spaceTypeToggleController = ValueNotifier<bool>(
     false,
@@ -190,61 +193,41 @@ class SpacesController extends GetxController {
     }
   }
 
+  void onAddFeed() async {
+    final uploadedUrls = <String>[];
+    final postId = DateTime.now().millisecondsSinceEpoch.toString();
 
-
-  Future<void> addFeed({
-    required String title,
-    required String content,
-    required String userName,
-    required String ?userProfileImage,
-  }) async {
-    try {
-      loading.value = true;
-
-      final postId = DateTime.now().millisecondsSinceEpoch.toString();
-      final uploadedUrls = <String>[];
-
-
-      for (final file in uploadedFiles) {
-        final extension = file.path.split('.').last;
-        final url = await SupabaseStorageApi.uploadFeedFile(
-          file: file,
-          postId: postId,
-          extension: extension,
+    for (final file in uploadedFiles) {
+      final extension = file.path.split('.').last;
+      final url = await FeedService.uploadFeedFile(
+        file: file,
+        postId: postId,
+        extension: extension,
+      );
+      if (url != null) {
+        uploadedUrls.add(url);
+      } else {
+        AppMethod.snackbar(
+          "Upload Failed",
+          "Unable to upload media...",
+          SnackBarType.ERROR,
         );
-        if (url != null) {
-          uploadedUrls.add(url);
-        }
       }
+    }
 
-      final feed = FeedTileModel(
-        userProfileImage: userProfileImage,
-        userName: userName,
+    await FeedService.addFeed(
+      FeedTileModel(
+        userProfileImage: '',
+        userName: 'Test Name',
         genre: genreTextController.text.trim(),
         postedTime: DateTime.now().toIso8601String(),
-        feedTitle: title.trim(),
-        feedContent: content.trim(),
+        feedTitle: feedTitleController.text,
+        feedDescription: feedDescriptionController.text,
         currentLikes: '0',
         currentComments: '0',
         currentShare: '0',
         postImage: uploadedUrls,
-      );
-
-
-      await FirestoreApi.addFeed(feed);
-
-
-      uploadedFiles.clear();
-      genreTextController.clear();
-      AppMethod.snackbar("Success", "Feed posted!", SnackBarType.SUCCESS);
-      Get.back();
-    } catch (e) {
-      AppMethod.snackbar("Error", e.toString(), SnackBarType.ERROR);
-    } finally {
-      loading.value = false;
-    }
+      ),
+    );
   }
-
-
-
 }

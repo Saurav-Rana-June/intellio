@@ -12,7 +12,6 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../data/models/auth/user_model.dart';
 import '../../../data/models/feed_models/feed_model.dart';
 import '../../../data/services/auth_service.dart';
-import '../../../data/services/firestore_api.dart';
 
 class AddFeedView extends StatefulWidget {
   const AddFeedView({super.key});
@@ -40,23 +39,24 @@ class _AddFeedViewState extends State<AddFeedView> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Theme
-            .of(context)
-            .scaffoldBackgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: CustomPrimaryButton(label: "Add", onTap: () async {
-          final String? uid = FirebaseAuth.instance.currentUser?.uid;
+        child: CustomPrimaryButton(
+          label: "Add",
+          onTap: () async {
+            spacesController.onAddFeed();
+            // final String? uid = FirebaseAuth.instance.currentUser?.uid;
 
-          if (uid != null) {
-            final UserModel? user = await AuthService().getUserByUid(uid);
+            // if (uid != null) {
+            //   final UserModel? user = await AuthService().getUserByUid(uid);
 
-
-            spacesController.addFeed(title: spacesController.uploadedFiles,
-                content: content,
-                userName: userName,
-                userProfileImage: userProfileImage)
-          }
-        }),
+            //   spacesController.addFeed(title: spacesController.uploadedFiles,
+            //       content: content,
+            //       userName: userName,
+            //       userProfileImage: userProfileImage)
+            // }
+          },
+        ),
       ),
     );
   }
@@ -146,11 +146,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                           height: 18,
                           width: 18,
                           colorFilter: ColorFilter.mode(
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .color!,
+                            Theme.of(context).textTheme.bodyMedium!.color!,
                             BlendMode.srcIn,
                           ),
                         ),
@@ -171,16 +167,15 @@ class _AddFeedViewState extends State<AddFeedView> {
         Text('Type', style: r16.copyWith()),
         SizedBox(height: 8),
         Obx(
-              () =>
-              CustomDropdown<String>(
-                items: spacesController.uploadType,
-                value: spacesController.selectedUploadType?.value,
-                itemToString: (item) => item,
-                onChanged: (val) {
-                  spacesController.selectedUploadType?.value = val ?? '';
-                  spacesController.uploadedFiles.clear();
-                },
-              ),
+          () => CustomDropdown<String>(
+            items: spacesController.uploadType,
+            value: spacesController.selectedUploadType?.value,
+            itemToString: (item) => item,
+            onChanged: (val) {
+              spacesController.selectedUploadType?.value = val ?? '';
+              spacesController.uploadedFiles.clear();
+            },
+          ),
         ),
         SizedBox(height: 24),
 
@@ -236,9 +231,8 @@ class _AddFeedViewState extends State<AddFeedView> {
             ),
             SizedBox(height: 10),
             Obx(
-                  () =>
-                  Column(
-                    children:
+              () => Column(
+                children:
                     spacesController.uploadedFiles.map((file) {
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -270,9 +264,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Text(file.path
-                                    .split('/')
-                                    .last),
+                                Text(file.path.split('/').last),
                               ],
                             ),
 
@@ -286,7 +278,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                         ),
                       );
                     }).toList(),
-                  ),
+              ),
             ),
           ],
         );
@@ -315,9 +307,8 @@ class _AddFeedViewState extends State<AddFeedView> {
             ),
             SizedBox(height: 10),
             Obx(
-                  () =>
-                  Column(
-                    children:
+              () => Column(
+                children:
                     spacesController.uploadedFiles.map((file) {
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -349,9 +340,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Text(file.path
-                                    .split('/')
-                                    .last),
+                                Text(file.path.split('/').last),
                               ],
                             ),
 
@@ -365,7 +354,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                         ),
                       );
                     }).toList(),
-                  ),
+              ),
             ),
           ],
         );
@@ -394,9 +383,8 @@ class _AddFeedViewState extends State<AddFeedView> {
             ),
             SizedBox(height: 10),
             Obx(
-                  () =>
-                  Column(
-                    children:
+              () => Column(
+                children:
                     spacesController.uploadedFiles.map((file) {
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -428,9 +416,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Text(file.path
-                                    .split('/')
-                                    .last),
+                                Text(file.path.split('/').last),
                               ],
                             ),
 
@@ -444,7 +430,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                         ),
                       );
                     }).toList(),
-                  ),
+              ),
             ),
           ],
         );
@@ -472,9 +458,8 @@ class _AddFeedViewState extends State<AddFeedView> {
             ),
             SizedBox(height: 10),
             Obx(
-                  () =>
-                  Column(
-                    children:
+              () => Column(
+                children:
                     spacesController.uploadedFiles.map((file) {
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -506,9 +491,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Text(file.path
-                                    .split('/')
-                                    .last),
+                                Text(file.path.split('/').last),
                               ],
                             ),
 
@@ -522,7 +505,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                         ),
                       );
                     }).toList(),
-                  ),
+              ),
             ),
           ],
         );
@@ -551,9 +534,8 @@ class _AddFeedViewState extends State<AddFeedView> {
             ),
             SizedBox(height: 10),
             Obx(
-                  () =>
-                  Column(
-                    children:
+              () => Column(
+                children:
                     spacesController.uploadedFiles.map((file) {
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -585,9 +567,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                                   ),
                                 ),
                                 SizedBox(width: 5),
-                                Text(file.path
-                                    .split('/')
-                                    .last),
+                                Text(file.path.split('/').last),
                               ],
                             ),
 
@@ -601,7 +581,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                         ),
                       );
                     }).toList(),
-                  ),
+              ),
             ),
           ],
         );

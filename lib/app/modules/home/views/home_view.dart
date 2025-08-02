@@ -12,6 +12,7 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return Scaffold(
       body: Obx(() => controller.screens[controller.currentIndex.value]),
       bottomNavigationBar: Obx(

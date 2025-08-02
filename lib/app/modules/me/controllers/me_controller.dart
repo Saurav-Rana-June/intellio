@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/models/auth/user_model.dart';
@@ -59,6 +61,18 @@ class MeController extends GetxController {
   updateUserData() async {
     updateLoading.value = true;
     try {
+      String? uploadedImageUrl;
+
+      if (imageFile.value != null) {
+        final uid = userModel.value?.uid;
+        if (uid != null) {
+          uploadedImageUrl = await AuthService.uploadUserProfileImage(
+            File(imageFile.value!.path),
+            uid,
+          );
+        }
+      }
+
       final user = await _authService.updateUserDetails(
         UserModel(
           name: nameTextfield.text,
@@ -68,7 +82,7 @@ class MeController extends GetxController {
           address: addressTextfield.text,
           phoneNumber: phoneNumberTextfield.text,
           bio: bioTextfield.text,
-          photoUrl: imageFile.value?.path,
+          photoUrl: uploadedImageUrl ??  userModel.value?.photoUrl,
         ),
       );
 
