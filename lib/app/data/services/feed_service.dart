@@ -28,9 +28,10 @@ class FeedService {
     }
   }
 
-  static Future<void> addFeed(FeedTileModel model) async {
+  static Future<bool> addFeed(FeedTileModel model) async {
     try {
       await _feedsCollection.add(model.toMap());
+      return true;
     } catch (e) {
       throw Exception("Failed to add feed: $e");
     }

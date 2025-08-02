@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MeController extends GetxController {
-  final AuthService _authService = AuthService();
   Rx<UserModel?> userModel = Rx<UserModel?>(null);
   RxBool isLoading = false.obs;
   RxBool updateLoading = false.obs;
@@ -46,7 +45,7 @@ class MeController extends GetxController {
     isLoading.value = true;
     final currentUser = AppMethod.getUserLocally();
     if (currentUser != null && currentUser.uid != null) {
-      userModel.value = await _authService.getUserByUid(currentUser.uid ?? '');
+      userModel.value = await AuthService().getUserByUid(currentUser.uid ?? '');
       isLoading.value = false;
     } else {
       AppMethod.snackbar(
@@ -73,7 +72,7 @@ class MeController extends GetxController {
         }
       }
 
-      final user = await _authService.updateUserDetails(
+      final user = await AuthService().updateUserDetails(
         UserModel(
           name: nameTextfield.text,
           email: officialEmailTextfield.text,
@@ -82,7 +81,7 @@ class MeController extends GetxController {
           address: addressTextfield.text,
           phoneNumber: phoneNumberTextfield.text,
           bio: bioTextfield.text,
-          photoUrl: uploadedImageUrl ??  userModel.value?.photoUrl,
+          photoUrl: uploadedImageUrl ?? userModel.value?.photoUrl,
         ),
       );
 
@@ -174,7 +173,7 @@ class MeController extends GetxController {
     final shouldLogout = await showLogoutConfirmation(context);
     if (shouldLogout == true) {
       try {
-        await _authService.signOut();
+        await AuthService().signOut();
         await AppMethod().removeUserLocally();
         Get.offAllNamed(Routes.LOGIN);
         AppMethod.snackbar(

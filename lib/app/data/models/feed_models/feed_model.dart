@@ -1,4 +1,5 @@
 class FeedTileModel {
+  final String? uid;
   final String? userProfileImage;
   final String? userName;
   final String? genre;
@@ -12,6 +13,7 @@ class FeedTileModel {
   final List<String>? postImage;
 
   FeedTileModel({
+    this.uid,
     this.userProfileImage,
     this.userName,
     this.genre,
@@ -27,6 +29,7 @@ class FeedTileModel {
 
   factory FeedTileModel.fromMap(Map<String, dynamic> map) {
     return FeedTileModel(
+      uid: map['uid'] as String?,
       userProfileImage: map['userProfileImage'] as String?,
       userName: map['userName'] as String?,
       genre: map['genre'] as String?,
@@ -42,6 +45,7 @@ class FeedTileModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'uid': uid,
       'userProfileImage': userProfileImage,
       'userName': userName,
       'genre': genre,

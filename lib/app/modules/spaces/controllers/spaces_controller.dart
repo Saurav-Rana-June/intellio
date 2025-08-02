@@ -30,6 +30,7 @@ class SpacesController extends GetxController {
 
   RxBool isPrivate = false.obs;
   RxBool loading = false.obs;
+  RxBool uploading = false.obs;
   RxBool isAllSpacesActive = true.obs;
 
   final RxList<String> genreList = <String>[].obs;
@@ -165,6 +166,68 @@ class SpacesController extends GetxController {
     }
   }
 
+  void onAddFeed() async {
+    uploading.value = true;
+    final uploadedUrls = <String>[];
+    final postId = DateTime.now().millisecondsSinceEpoch.toString();
+    final currentUser = AppMethod.getUserLocally();
+
+    for (final file in uploadedFiles) {
+      final extension = file.path.split('.').last;
+      final url = await FeedService.uploadFeedFile(
+        file: file,
+        postId: postId,
+        extension: extension,
+      );
+      if (url != null) {
+        uploadedUrls.add(url);
+      } else {
+        AppMethod.snackbar(
+          "Upload Failed",
+          "Unable to upload media...",
+          SnackBarType.ERROR,
+        );
+      }
+    }
+
+    final value = await FeedService.addFeed(
+      FeedTileModel(
+        uid: currentUser?.uid,
+        userProfileImage: currentUser?.photoUrl,
+        userName: currentUser?.name,
+        genre: genreTextController.text.trim(),
+        postedTime: DateTime.now().toIso8601String(),
+        feedTitle: feedTitleController.text,
+        feedDescription: feedDescriptionController.text,
+        currentLikes: '0',
+        currentComments: '0',
+        currentShare: '0',
+        postImage: uploadedUrls,
+      ),
+    );
+
+    if (value == true) {
+      uploading.value = false;
+      AppMethod.snackbar(
+        "Uploaded Successfully",
+        "Feed uploaded successfully...",
+        SnackBarType.SUCCESS,
+      );
+    } else {
+      uploading.value = false;
+      AppMethod.snackbar(
+        "Upload Failed",
+        "There is some issue in uploading feed...",
+        SnackBarType.SUCCESS,
+      );
+    }
+    feedTitleController.clear();
+    feedDescriptionController.clear();
+    feedTitleController.clear();
+    genreTextController.clear();
+    selectedUploadType?.value = 'Link';
+  }
+
   Future<void> pickImage() async {
     final images = await ImagePicker().pickMultiImage();
     if (images != null) {
@@ -209,43 +272,5 @@ class SpacesController extends GetxController {
     if (result != null) {
       uploadedFiles.addAll(result.paths.map((e) => File(e!)));
     }
-  }
-
-  void onAddFeed() async {
-    final uploadedUrls = <String>[];
-    final postId = DateTime.now().millisecondsSinceEpoch.toString();
-
-    for (final file in uploadedFiles) {
-      final extension = file.path.split('.').last;
-      final url = await FeedService.uploadFeedFile(
-        file: file,
-        postId: postId,
-        extension: extension,
-      );
-      if (url != null) {
-        uploadedUrls.add(url);
-      } else {
-        AppMethod.snackbar(
-          "Upload Failed",
-          "Unable to upload media...",
-          SnackBarType.ERROR,
-        );
-      }
-    }
-
-    await FeedService.addFeed(
-      FeedTileModel(
-        userProfileImage: '',
-        userName: 'Test Name',
-        genre: genreTextController.text.trim(),
-        postedTime: DateTime.now().toIso8601String(),
-        feedTitle: feedTitleController.text,
-        feedDescription: feedDescriptionController.text,
-        currentLikes: '0',
-        currentComments: '0',
-        currentShare: '0',
-        postImage: uploadedUrls,
-      ),
-    );
   }
 }

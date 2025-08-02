@@ -19,6 +19,7 @@ class SpacesView extends GetView<SpacesController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.delete<SpacesController>();
     final controller = Get.put(SpacesController());
 
     return Scaffold(

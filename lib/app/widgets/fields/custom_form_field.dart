@@ -78,7 +78,7 @@ class CustomFormField extends StatelessWidget {
                     )
                     : null,
             filled: true,
-            fillColor: regular50.withValues(alpha: 0.3),
+            fillColor: regular50.withValues(alpha: readOnly ? 0.1 : 0.3),
             enabledBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8),
@@ -86,7 +86,7 @@ class CustomFormField extends StatelessWidget {
               ),
               borderSide: BorderSide(
                 width: 1.5,
-                color: Theme.of(context).dividerColor,
+                color: readOnly ? regular50 : Theme.of(context).dividerColor,
               ),
             ),
             focusedBorder: UnderlineInputBorder(
@@ -94,7 +94,7 @@ class CustomFormField extends StatelessWidget {
                 topLeft: Radius.circular(8),
                 topRight: Radius.circular(8),
               ),
-              borderSide: BorderSide(width: 1.5, color: primary),
+              borderSide: BorderSide(width: 1.5, color: readOnly ? regular50 : primary),
             ),
             errorBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.only(

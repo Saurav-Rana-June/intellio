@@ -38,149 +38,166 @@ class _AddFeedViewState extends State<AddFeedView> {
           child: buildAddFeedForm(),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: CustomPrimaryButton(
-          label: "Add",
-          onTap: () async {
-            spacesController.onAddFeed();
-            // final String? uid = FirebaseAuth.instance.currentUser?.uid;
-
-            // if (uid != null) {
-            //   final UserModel? user = await AuthService().getUserByUid(uid);
-
-            //   spacesController.addFeed(title: spacesController.uploadedFiles,
-            //       content: content,
-            //       userName: userName,
-            //       userProfileImage: userProfileImage)
-            // }
-          },
+      bottomNavigationBar: Obx(
+        () => Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          child: CustomPrimaryButton(
+            label: "Add Feed",
+            isLoading: spacesController.uploading.value,
+            isDisabled:
+                spacesController.genreList.isEmpty
+                    ? true
+                    : spacesController.uploading.value,
+            onTap: () {
+              if (!spacesController.formKey.currentState!.validate()) {
+                return;
+              }
+              spacesController.onAddFeed();
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
     );
   }
 
-  Column buildAddFeedForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Title
-        Text('Title', style: r16.copyWith()),
-        SizedBox(height: 8),
-        CustomFormField(
-          controller: TextEditingController(),
-          hintText: 'Title',
-          keyboardType: TextInputType.name,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Title is required';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 24),
-
-        // Description
-        Text('Description', style: r16.copyWith()),
-        SizedBox(height: 8),
-        CustomFormField(
-          controller: TextEditingController(),
-          hintText: 'description...',
-          keyboardType: TextInputType.text,
-          maxLines: 5,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Description is required';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 24),
-
-        // Genre
-        Text('Genre', style: r16.copyWith()),
-        SizedBox(height: 8),
-        CustomFormField(
-          controller: spacesController.genreTextController,
-          hintText: 'Genre',
-          keyboardType: TextInputType.name,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Genre is required';
-            }
-            return null;
-          },
-        ),
-
-        Obx(() {
-          if (spacesController.filteredGenres.isEmpty) {
-            return SizedBox();
-          }
-
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-              color: regular50.withValues(alpha: 0.3),
-            ),
-            child: ListView.builder(
-              padding: EdgeInsets.all(8),
-              shrinkWrap: true,
-              itemCount: spacesController.filteredGenres.length,
-              itemBuilder: (context, index) {
-                final genre = spacesController.filteredGenres[index];
-                return InkWell(
-                  onTap: () {
-                    spacesController.genreTextController.text = genre;
-                    spacesController.filteredGenres.clear();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/folder.svg',
-                          height: 18,
-                          width: 18,
-                          colorFilter: ColorFilter.mode(
-                            Theme.of(context).textTheme.bodyMedium!.color!,
-                            BlendMode.srcIn,
-                          ),
-                        ),
-                        SizedBox(width: 10),
-
-                        Text(genre),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        }),
-        SizedBox(height: 24),
-
-        // Type
-        Text('Type', style: r16.copyWith()),
-        SizedBox(height: 8),
-        Obx(
-          () => CustomDropdown<String>(
-            items: spacesController.uploadType,
-            value: spacesController.selectedUploadType?.value,
-            itemToString: (item) => item,
-            onChanged: (val) {
-              spacesController.selectedUploadType?.value = val ?? '';
-              spacesController.uploadedFiles.clear();
+  Form buildAddFeedForm() {
+    return Form(
+      key: spacesController.formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title
+          Text('Title', style: r16.copyWith()),
+          SizedBox(height: 8),
+          CustomFormField(
+            controller: spacesController.feedTitleController,
+            hintText: 'Title',
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Title is required';
+              }
+              return null;
             },
           ),
-        ),
-        SizedBox(height: 24),
+          SizedBox(height: 24),
 
-        Obx(() => buildUploadSection()),
-      ],
+          // Description
+          Text('Description', style: r16.copyWith()),
+          SizedBox(height: 8),
+          CustomFormField(
+            controller: spacesController.feedDescriptionController,
+            hintText: 'description...',
+            keyboardType: TextInputType.text,
+            maxLines: 5,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Description is required';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 24),
+
+          // Genre
+          Text('Genre', style: r16.copyWith()),
+          SizedBox(height: 8),
+          CustomFormField(
+            controller: spacesController.genreTextController,
+            hintText:
+                spacesController.genreList.isEmpty
+                    ? 'No Spaces available'
+                    : 'Genre',
+            readOnly: spacesController.genreList.isEmpty ? true : false,
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Genre is required';
+              }
+              return null;
+            },
+          ),
+          spacesController.genreList.isEmpty
+              ? Text(
+                "There isn’t any space available currently, so first make one",
+                style: r12.copyWith(fontStyle: FontStyle.italic),
+              )
+              : SizedBox(),
+
+          Obx(() {
+            if (spacesController.filteredGenres.isEmpty) {
+              return SizedBox();
+            }
+
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                color: regular50.withValues(alpha: 0.3),
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.all(8),
+                shrinkWrap: true,
+                itemCount: spacesController.filteredGenres.length,
+                itemBuilder: (context, index) {
+                  final genre = spacesController.filteredGenres[index];
+                  return InkWell(
+                    onTap: () {
+                      spacesController.genreTextController.text = genre;
+                      spacesController.filteredGenres.clear();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/folder.svg',
+                            height: 18,
+                            width: 18,
+                            colorFilter: ColorFilter.mode(
+                              Theme.of(context).textTheme.bodyMedium!.color!,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+
+                          Text(genre),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }),
+          SizedBox(height: 24),
+
+          // Type
+          Text('Type', style: r16.copyWith()),
+          SizedBox(height: 8),
+          Obx(
+            () => CustomDropdown<String>(
+              items: spacesController.uploadType,
+              value: spacesController.selectedUploadType?.value,
+              itemToString: (item) => item,
+              onChanged: (val) {
+                spacesController.selectedUploadType?.value = val ?? '';
+                spacesController.uploadedFiles.clear();
+              },
+            ),
+          ),
+          SizedBox(height: 24),
+
+          Obx(() => buildUploadSection()),
+        ],
+      ),
     );
   }
 
