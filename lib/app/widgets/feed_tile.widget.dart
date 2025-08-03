@@ -1,5 +1,8 @@
+import 'package:Intellio/app/data/methods/datetime_methods.dart';
 import 'package:Intellio/app/routes/app_pages.dart';
+import 'package:Intellio/app/widgets/image_viewer.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -60,13 +63,28 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '${widget.feed.userName} > ${widget.feed.genre}',
-                      style: r16.copyWith(),
+                    Row(
+                      children: [
+                        Text('${widget.feed.userName}', style: r16.copyWith()),
+                        SizedBox(width: 4),
+                        SvgPicture.asset(
+                          'assets/icons/arrow-right.svg',
+                          height: 15,
+                          width: 15,
+                          colorFilter: ColorFilter.mode(
+                            primary,
+                            BlendMode.srcIn, // Most common for solid coloring
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text('${widget.feed.genre}', style: r16.copyWith()),
+                      ],
                     ),
                     Text(
-                      'Posted at ${widget.feed.postedTime}',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      'Posted at ${DateTimeMethods.convertDateTimeToHumanDate(widget.feed.postedTime != null ? DateTime.parse(widget.feed.postedTime!) : null)}',
+                      style: r12.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall!.color,
+                      ),
                     ),
                   ],
                 ),
@@ -86,7 +104,7 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
 
         // Image Carousel
         buildImageSection(context),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
 
         // Like, Comment and Share
         Row(
@@ -96,8 +114,17 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.favorite_border),
-                    SizedBox(width: 8),
+                    SvgPicture.asset(
+                      'assets/icons/favourite.svg',
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).textTheme.bodyMedium!.color!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+
+                    SizedBox(width: 5),
                     if (widget.feed.currentLikes != null)
                       Text(
                         widget.feed.currentLikes ?? "O",
@@ -107,11 +134,20 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                       SizedBox(),
                   ],
                 ),
-                SizedBox(width: 24),
+                SizedBox(width: 20),
                 Row(
                   children: [
-                    Icon(Icons.mode_comment_outlined),
-                    SizedBox(width: 8),
+                    SvgPicture.asset(
+                      'assets/icons/comment.svg',
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).textTheme.bodyMedium!.color!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+
+                    SizedBox(width: 5),
                     if (widget.feed.currentComments != null)
                       Text(
                         widget.feed.currentComments ?? "0",
@@ -119,11 +155,20 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                       ),
                   ],
                 ),
-                SizedBox(width: 24),
+                SizedBox(width: 20),
                 Row(
                   children: [
-                    Icon(Icons.share_outlined),
-                    SizedBox(width: 8),
+                    SvgPicture.asset(
+                      'assets/icons/share.svg',
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).textTheme.bodyMedium!.color!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+
+                    SizedBox(width: 5),
                     if (widget.feed.currentShare != null)
                       Text(
                         widget.feed.currentShare ?? "0",
@@ -145,20 +190,27 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                 children: [
                   Text(
                     'View Full Post',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: r12.copyWith(
+                      color: Theme.of(context).textTheme.bodySmall?.color,
+                    ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 12,
-                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  SizedBox(width: 5),
+                  SvgPicture.asset(
+                    'assets/icons/arrow-right.svg',
+                    height: 15,
+                    width: 15,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).textTheme.bodySmall?.color ??
+                          Colors.grey,
+                      BlendMode.srcIn, // Most common for solid coloring
+                    ),
                   ),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
 
         Divider(
           color: Theme.of(context).textTheme.bodySmall?.color,
@@ -169,7 +221,7 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
   }
 
   Column buildImageSection(BuildContext context) {
-     return Column(
+    return Column(
       children: [
         SizedBox(
           height: 250,
@@ -177,12 +229,37 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
             controller: pageController,
             itemCount: widget.feed.postImage!.length,
             itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  widget.feed.postImage![index],
-                  fit: BoxFit.cover,
-                  width: double.infinity,
+              return GestureDetector(
+                onTap: () {
+                  Get.to(
+                    () => ImageViewerWidget(
+                      imageUrl: widget.feed.postImage![index],
+                    ),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    widget.feed.postImage![index],
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).textTheme.bodySmall?.color,
+                          value:
+                              loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes!)
+                                  : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(child: Icon(Icons.broken_image));
+                    },
+                  ),
                 ),
               );
             },
@@ -198,7 +275,7 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(horizontal: 4),
-                  height: 8,
+                  height: 4,
                   width: isActive ? 16 : 8,
                   decoration: BoxDecoration(
                     color:

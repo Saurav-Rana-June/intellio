@@ -208,6 +208,7 @@ class SpacesController extends GetxController {
 
     if (value == true) {
       uploading.value = false;
+      Get.back();
       AppMethod.snackbar(
         "Uploaded Successfully",
         "Feed uploaded successfully...",
@@ -215,6 +216,7 @@ class SpacesController extends GetxController {
       );
     } else {
       uploading.value = false;
+      Get.back();
       AppMethod.snackbar(
         "Upload Failed",
         "There is some issue in uploading feed...",

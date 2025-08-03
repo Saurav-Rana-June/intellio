@@ -42,27 +42,6 @@ class FeedView extends GetView<FeedController> {
                     },
                   )
                   : buildFallbackText(),
-          // () =>
-          //     feedController.feeds != null && feedController.feeds.isNotEmpty
-          //         ? feedController.isLoading.value
-          //             ? Expanded(
-          //               child: Column(
-          //                 mainAxisAlignment: MainAxisAlignment.center,
-          //                 children: [
-          //                   Loader(colors: [primary, primary, primary]),
-          //                 ],
-          //               ),
-          //             )
-          //             : ListView.builder(
-          //               itemCount: feedController.feeds.value.length,
-          //               physics: BouncingScrollPhysics(),
-          //               itemBuilder: (context, index) {
-          //                 return FeedTileWidget(
-          //                   feed: feedController.feeds[index],
-          //                 );
-          //               },
-          //             )
-          //         : buildFallbackText(),
         ),
       ),
     );

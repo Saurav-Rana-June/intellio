@@ -43,7 +43,10 @@ class _AddFeedViewState extends State<AddFeedView> {
           color: Theme.of(context).scaffoldBackgroundColor,
           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: CustomPrimaryButton(
-            label: "Add Feed",
+            label:
+                spacesController.uploading.value
+                    ? "Uploading... Please wait"
+                    : "Add Feed",
             isLoading: spacesController.uploading.value,
             isDisabled:
                 spacesController.genreList.isEmpty
@@ -54,7 +57,6 @@ class _AddFeedViewState extends State<AddFeedView> {
                 return;
               }
               spacesController.onAddFeed();
-              Navigator.of(context).pop();
             },
           ),
         ),
