@@ -59,6 +59,7 @@ class AppMethod {
       leftBarIndicatorColor: color,
       overlayBlur: 0,
       barBlur: 0,
+      instantInit: false,
       boxShadows: [
         BoxShadow(
           color: regular.withOpacity(0.2),
@@ -89,7 +90,7 @@ class AppMethod {
     await box.remove('user');
   }
 
-// Generate random
+  // Generate random
   String generateUniqueIdFromText(String input, {int suffixLength = 8}) {
     final random = Random();
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()_-+=';
