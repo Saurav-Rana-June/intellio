@@ -13,7 +13,8 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final _supabase = supabase.Supabase.instance.client;
 
-  static final _profileBucket = _supabase.storage.from('user-profile-images');
+  // static final _profileBucket = _supabase.storage.from('user-profile-images');
+  static final _profileBucket = _supabase.storage.from('user-bucket');
 
   // Login Method
   Future<UserModel?> signInWithEmailPassword(
@@ -88,16 +89,18 @@ class AuthService {
   }
 
   // Saving Profile Image to Supabase
-  static Future<String?> uploadUserProfileImage(
-    File file,
-    String userId,
-  ) async {
+  static Future<String?> uploadUserProfileImage({
+    required File file,
+    required String userId,
+    required String extension,
+  }) async {
     try {
-      final filePath = 'profile_$userId.jpg';
+      final filePath =
+          '$userId.$extension';
       await _profileBucket.upload(
         filePath,
         file,
-        fileOptions: const supabase.FileOptions(upsert: true),
+        fileOptions: supabase.FileOptions(upsert: true,),
       );
       return _profileBucket.getPublicUrl(filePath);
     } catch (e) {
@@ -105,6 +108,22 @@ class AuthService {
       return null;
     }
   }
+
+  // static Future<String?> uploadFeedFile({
+  //   required File file,
+  //   required String postId,
+  //   required String extension,
+  // }) async {
+  //   try {
+  //     final filePath =
+  //         '$postId/${DateTime.now().millisecondsSinceEpoch}.$extension';
+  //     await _feedBucket.upload(filePath, file);
+  //     return _feedBucket.getPublicUrl(filePath);
+  //   } catch (e) {
+  //     print('Failed to upload feed file: $e');
+  //     return null;
+  //   }
+  // }
 
   // Update user Method
   Future<UserModel?> updateUserDetails(UserModel userModel) async {

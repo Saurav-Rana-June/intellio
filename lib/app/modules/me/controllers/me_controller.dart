@@ -64,10 +64,12 @@ class MeController extends GetxController {
 
       if (imageFile.value != null) {
         final uid = userModel.value?.uid;
+        final extension = imageFile.value!.path.split('.').last;
         if (uid != null) {
           uploadedImageUrl = await AuthService.uploadUserProfileImage(
-            File(imageFile.value!.path),
-            uid,
+            file: File(imageFile.value!.path),
+            userId: uid,
+            extension: extension,
           );
         }
       }
@@ -86,6 +88,7 @@ class MeController extends GetxController {
       );
 
       if (user != null) {
+        updateLoading.value = false;
         AppMethod().saveUserLocally(user);
         Get.back();
         AppMethod.snackbar(
@@ -96,8 +99,11 @@ class MeController extends GetxController {
         getUserData();
       }
     } catch (e) {
+      updateLoading.value = false;
       AppMethod.snackbar("Login Failed", "${e}", SnackBarType.ERROR);
-    } finally {}
+    } finally {
+      updateLoading.value = false;
+    }
   }
 
   static Future<bool?> showLogoutConfirmation(BuildContext context) async {

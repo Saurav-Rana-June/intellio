@@ -12,8 +12,11 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url:'https://rzfdpneoybgnkjgeznsz.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6ZmRwbmVveWJnbmtqZ2V6bnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNDgwMTAsImV4cCI6MjA2OTYyNDAxMH0.flnyjlBQ5V4J7XWQI4jwnEgqziC1qRHk0ZM1RF23SCI'
+    url: 'https://uwnbzboetgchcnxbvcrc.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bmJ6Ym9ldGdjaGNueGJ2Y3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNTY2NDUsImV4cCI6MjA2OTYzMjY0NX0.6-mNYyNmMWlFj4_-fuZ1-pqHg-__eM3tTlVfb8hAJrA',
+    // url:'https://rzfdpneoybgnkjgeznsz.supabase.co',
+    // anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6ZmRwbmVveWJnbmtqZ2V6bnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwNDgwMTAsImV4cCI6MjA2OTYyNDAxMH0.flnyjlBQ5V4J7XWQI4jwnEgqziC1qRHk0ZM1RF23SCI'
   );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();

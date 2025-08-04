@@ -278,7 +278,7 @@ class _MeViewState extends State<MeView> {
                 backgroundImage:
                     controller.userModel.value?.photoUrl != null &&
                             controller.userModel.value!.photoUrl!.isNotEmpty
-                        ? FileImage(File(controller.userModel.value!.photoUrl!))
+                        ? NetworkImage(controller.userModel.value!.photoUrl!)
                         : null,
                 child:
                     controller.userModel.value?.photoUrl != null &&

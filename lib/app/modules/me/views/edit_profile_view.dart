@@ -36,10 +36,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     controller.phoneNumberTextfield.text = widget.userModel?.phoneNumber ?? "";
     controller.addressTextfield.text = widget.userModel?.address ?? "";
     controller.bioTextfield.text = widget.userModel?.bio ?? "";
-    controller.imageFile.value =
-        widget.userModel?.photoUrl != null
-            ? XFile(widget.userModel!.photoUrl!)
-            : null;
+    controller.imageFile.value = null;
   }
 
   @override
@@ -66,12 +63,19 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ],
                 ),
               ),
-              Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: CustomPrimaryButton(
-                  label: "Update Profile",
-                  onTap: () => controller.updateUserData(),
+              Obx(
+                () => Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: CustomPrimaryButton(
+                    label:
+                        controller.updateLoading.value
+                            ? "Updating... Please wait"
+                            : "Update Profile",
+                    isDisabled: controller.updateLoading.value,
+                    isLoading: controller.updateLoading.value,
+                    onTap: () => controller.updateUserData(),
+                  ),
                 ),
               ),
             ],
@@ -223,9 +227,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                 backgroundImage:
                     controller.imageFile.value != null
                         ? FileImage(File(controller.imageFile.value!.path))
+                        : widget.userModel!.photoUrl != null
+                        ? NetworkImage(controller.userModel.value!.photoUrl!)
                         : null,
                 child:
-                    controller.imageFile.value == null
+                    controller.imageFile.value == null &&
+                            widget.userModel!.photoUrl == null
                         ? Icon(Icons.person, size: 50)
                         : null,
               ),

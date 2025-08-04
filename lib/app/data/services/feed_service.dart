@@ -9,7 +9,7 @@ class FeedService {
     'feeds',
   );
   static final _supabase = Supabase.instance.client;
-  static final _feedBucket = _supabase.storage.from('feed-images');
+  static final _feedBucket = _supabase.storage.from('feed-bucket');
 
   // Saving Feed Files to Supabase
   static Future<String?> uploadFeedFile({
