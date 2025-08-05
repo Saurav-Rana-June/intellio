@@ -1,6 +1,7 @@
 // splash_view.dart
 import 'package:Intellio/app/widgets/loader.dart';
 import 'package:Intellio/infrastructure/theme/theme.dart';
+import 'package:all/all.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';

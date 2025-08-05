@@ -271,22 +271,50 @@ class _MeViewState extends State<MeView> {
                 ),
               ],
             ),
-            Obx(
-              () => CircleAvatar(
+            Obx(() {
+              final photoUrl = controller.userModel.value?.photoUrl;
+              final hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
+
+              return CircleAvatar(
                 radius: 60,
                 backgroundColor: regular50,
-                backgroundImage:
-                    controller.userModel.value?.photoUrl != null &&
-                            controller.userModel.value!.photoUrl!.isNotEmpty
-                        ? NetworkImage(controller.userModel.value!.photoUrl!)
-                        : null,
                 child:
-                    controller.userModel.value?.photoUrl != null &&
-                            controller.userModel.value!.photoUrl!.isNotEmpty
-                        ? null
+                    hasPhoto
+                        ? ClipOval(
+                          child: Image.network(
+                            photoUrl!,
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: primary,
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder:
+                                (context, error, stackTrace) =>
+                                    Icon(Icons.error, size: 80),
+                          ),
+                        )
                         : Icon(Icons.person, size: 80),
-              ),
-            ),
+              );
+            }),
+
             SizedBox(height: 16),
             Text(
               (controller.userModel.value?.name != null &&

@@ -77,7 +77,7 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                           ),
                         ),
                         SizedBox(width: 4),
-                        Text('${widget.feed.genre}', style: r16.copyWith()),
+                        Text('${widget.feed.space}', style: r16.copyWith()),
                       ],
                     ),
                     Text(

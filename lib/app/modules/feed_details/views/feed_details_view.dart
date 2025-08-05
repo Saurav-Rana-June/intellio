@@ -81,7 +81,7 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${controller.feed.userName} > ${controller.feed.genre}',
+                      '${controller.feed.userName} > ${controller.feed.space}',
                       style: r16,
                     ),
                     Text(

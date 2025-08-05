@@ -104,19 +104,19 @@ class _AddFeedViewState extends State<AddFeedView> {
           SizedBox(height: 24),
 
           // Genre
-          Text('Genre', style: r16.copyWith()),
+          Text('Space', style: r16.copyWith()),
           SizedBox(height: 8),
           CustomFormField(
             controller: spacesController.genreTextController,
             hintText:
                 spacesController.genreList.isEmpty
                     ? 'No Spaces available'
-                    : 'Genre',
+                    : 'Space',
             readOnly: spacesController.genreList.isEmpty ? true : false,
             keyboardType: TextInputType.name,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Genre is required';
+                return 'Space is required';
               }
               return null;
             },

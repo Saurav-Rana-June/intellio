@@ -2,7 +2,7 @@ class FeedTileModel {
   final String? uid;
   final String? userProfileImage;
   final String? userName;
-  final String? genre;
+  final String? space;
   final String? postedTime;
   final String? feedTitle;
   final String? feedDescription;
@@ -16,7 +16,7 @@ class FeedTileModel {
     this.uid,
     this.userProfileImage,
     this.userName,
-    this.genre,
+    this.space,
     this.postedTime,
     this.feedTitle,
     this.feedType,
@@ -32,7 +32,7 @@ class FeedTileModel {
       uid: map['uid'] as String?,
       userProfileImage: map['userProfileImage'] as String?,
       userName: map['userName'] as String?,
-      genre: map['genre'] as String?,
+      space: map['genre'] as String?,
       postedTime: map['postedTime'] as String?,
       feedTitle: map['feedTitle'] as String?,
       feedDescription: map['feedDescription'] as String?,
@@ -48,7 +48,7 @@ class FeedTileModel {
       'uid': uid,
       'userProfileImage': userProfileImage,
       'userName': userName,
-      'genre': genre,
+      'genre': space,
       'postedTime': postedTime,
       'feedTitle': feedTitle,
       'feedDescription': feedDescription,

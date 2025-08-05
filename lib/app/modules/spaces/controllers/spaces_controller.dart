@@ -93,17 +93,23 @@ class SpacesController extends GetxController {
             loading.value = false;
             if (value != null) {
               // Saving all spaces
-              allSpacesList.value = value;
+              final filteredAllSpaces =
+                  value.where((space) => space.isPrivate == false).toList();
+              allSpacesList.value = filteredAllSpaces;
 
               // Filtering only user's created space
-              final filteredSpaces =
+              final filteredPersonalSpaces =
                   value.where((space) => space.uid == currentUser.uid).toList();
-              personalSpacesList.value = filteredSpaces;
+              personalSpacesList.value = filteredPersonalSpaces;
 
               // Saving the name of all spaces in list
               genreList.value =
                   value
-                      .where((space) => space.name != null)
+                      .where(
+                        (space) =>
+                            !(space.uid != currentUser.uid &&
+                                space.isPrivate == true),
+                      )
                       .map((space) => space.name!)
                       .toList();
             }
@@ -195,7 +201,7 @@ class SpacesController extends GetxController {
         uid: currentUser?.uid,
         userProfileImage: currentUser?.photoUrl,
         userName: currentUser?.name,
-        genre: genreTextController.text.trim(),
+        space: genreTextController.text.trim(),
         postedTime: DateTime.now().toIso8601String(),
         feedTitle: feedTitleController.text,
         feedDescription: feedDescriptionController.text,
