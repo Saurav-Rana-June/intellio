@@ -77,7 +77,27 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                           ),
                         ),
                         SizedBox(width: 4),
-                        Text('${widget.feed.space}', style: r16.copyWith()),
+                        widget.feed.space?.isPrivate == true
+                            ? Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/lock.svg',
+                                  height: 14,
+                                  width: 14,
+                                  colorFilter: ColorFilter.mode(
+                                    primary,
+                                    BlendMode
+                                        .srcIn, // Most common for solid coloring
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                              ],
+                            )
+                            : SizedBox(),
+                        Text(
+                          '${widget.feed.space?.name}',
+                          style: r16.copyWith(),
+                        ),
                       ],
                     ),
                     Text(

@@ -10,13 +10,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:collection/collection.dart';
 import '../../../data/models/feed_models/feed_model.dart';
 
 class SpacesController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
+  final TextEditingController spaceSearchController = TextEditingController();
   final TextEditingController spaceTextController = TextEditingController();
   final TextEditingController genreTextController = TextEditingController();
   final TextEditingController feedTitleController = TextEditingController();
@@ -42,14 +43,17 @@ class SpacesController extends GetxController {
       ['Link', 'Video', 'Image', 'Audio', 'PDF', 'Zip Archive'].obs;
 
   RxList<File> uploadedFiles = <File>[].obs;
+   RxList<SpaceModel?> allSpacesList = <SpaceModel?>[].obs;
   RxList<SpaceModel?> personalSpacesList = <SpaceModel?>[].obs;
-  RxList<SpaceModel?> allSpacesList = <SpaceModel?>[].obs;
+  RxList<SpaceModel?> filtredAllSpacesList = <SpaceModel?>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     getSpaces();
     genreTextController.addListener(onSearchChanged);
+
+    spaceSearchController.addListener(onSearchChangedForSpaces);
 
     // Listen to notifier and update RxBool
     spaceTypeToggleController.addListener(() {
@@ -67,6 +71,7 @@ class SpacesController extends GetxController {
   @override
   void onClose() {
     genreTextController.removeListener(onSearchChanged);
+    spaceSearchController.removeListener(onSearchChangedForSpaces);
     genreTextController.dispose();
     super.onClose();
   }
@@ -83,6 +88,32 @@ class SpacesController extends GetxController {
     }
   }
 
+  void onSearchChangedForSpaces() {
+    final query = spaceSearchController.text.toLowerCase();
+
+    if (query.isEmpty) {
+      getSpaces();
+    }
+
+    if (isAllSpacesActive.value) {
+      // Filter All Spaces
+      filtredAllSpacesList.value =
+          filtredAllSpacesList
+              .where(
+                (space) => space!.name?.toLowerCase().contains(query) ?? false,
+              )
+              .toList();
+    } else {
+      // Filter My Spaces
+      personalSpacesList.value =
+          personalSpacesList
+              .where(
+                (space) => space!.name?.toLowerCase().contains(query) ?? false,
+              )
+              .toList();
+    }
+  }
+
   getSpaces() async {
     loading.value = true;
     final currentUser = AppMethod.getUserLocally();
@@ -92,10 +123,13 @@ class SpacesController extends GetxController {
           .then((value) {
             loading.value = false;
             if (value != null) {
+              allSpacesList.value =
+                  value;
+
               // Saving all spaces
               final filteredAllSpaces =
                   value.where((space) => space.isPrivate == false).toList();
-              allSpacesList.value = filteredAllSpaces;
+              filtredAllSpacesList.value = filteredAllSpaces;
 
               // Filtering only user's created space
               final filteredPersonalSpaces =
@@ -127,13 +161,19 @@ class SpacesController extends GetxController {
     }
   }
 
+  SpaceModel? getSpaceByName(String name) {
+  return allSpacesList.firstWhereOrNull(
+    (space) => space?.name?.toLowerCase() == name.toLowerCase(),
+  );
+}
+
   void onAddSpace() async {
     if (!formKey.currentState!.validate()) return;
 
-    if (genreList.contains(spaceTextController.text)) {
+    if (allSpacesList.any((space) => space!.name == spaceTextController.text)) {
       AppMethod.snackbar(
         "Space Already exists",
-        "Please choose different name for this.",
+        "Please choose a different name for this.",
         SnackBarType.ERROR,
       );
       return;
@@ -201,7 +241,7 @@ class SpacesController extends GetxController {
         uid: currentUser?.uid,
         userProfileImage: currentUser?.photoUrl,
         userName: currentUser?.name,
-        space: genreTextController.text.trim(),
+        space: getSpaceByName(genreTextController.text),
         postedTime: DateTime.now().toIso8601String(),
         feedTitle: feedTitleController.text,
         feedDescription: feedDescriptionController.text,
@@ -234,6 +274,7 @@ class SpacesController extends GetxController {
     feedTitleController.clear();
     genreTextController.clear();
     selectedUploadType?.value = 'Link';
+     uploading.value = false;
   }
 
   Future<void> pickImage() async {

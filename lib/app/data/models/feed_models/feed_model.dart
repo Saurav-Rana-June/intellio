@@ -1,8 +1,10 @@
+import 'package:Intellio/app/data/models/space_models/space_model.dart';
+
 class FeedTileModel {
   final String? uid;
   final String? userProfileImage;
   final String? userName;
-  final String? space;
+  final SpaceModel? space;
   final String? postedTime;
   final String? feedTitle;
   final String? feedDescription;
@@ -19,12 +21,12 @@ class FeedTileModel {
     this.space,
     this.postedTime,
     this.feedTitle,
+    this.feedDescription,
     this.feedType,
     this.currentLikes,
     this.currentComments,
     this.currentShare,
     this.postImage,
-    this.feedDescription,
   });
 
   factory FeedTileModel.fromMap(Map<String, dynamic> map) {
@@ -32,14 +34,17 @@ class FeedTileModel {
       uid: map['uid'] as String?,
       userProfileImage: map['userProfileImage'] as String?,
       userName: map['userName'] as String?,
-      space: map['genre'] as String?,
+      space: map['space'] != null ? SpaceModel.fromMap(map['space']) : null,
       postedTime: map['postedTime'] as String?,
       feedTitle: map['feedTitle'] as String?,
       feedDescription: map['feedDescription'] as String?,
+      feedType: map['feedType'] as String?,
       currentLikes: map['currentLikes'] as String?,
       currentComments: map['currentComments'] as String?,
       currentShare: map['currentShare'] as String?,
-      postImage: List<String>.from(map['postImage'] ?? []),
+      postImage: map['postImage'] != null
+          ? List<String>.from(map['postImage'])
+          : [],
     );
   }
 
@@ -48,14 +53,15 @@ class FeedTileModel {
       'uid': uid,
       'userProfileImage': userProfileImage,
       'userName': userName,
-      'genre': space,
+      'space': space?.toMap(),
       'postedTime': postedTime,
       'feedTitle': feedTitle,
       'feedDescription': feedDescription,
+      'feedType': feedType,
       'currentLikes': currentLikes,
       'currentComments': currentComments,
       'currentShare': currentShare,
-      'postImage': postImage,
+      'postImage': postImage ?? [],
     };
   }
 }

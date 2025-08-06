@@ -30,10 +30,13 @@ class SpacesView extends GetView<SpacesController> {
           children: [
             const SizedBox(height: 16),
             CustomFormField(
-              controller: TextEditingController(),
+              controller: controller.spaceSearchController,
               hintText: 'Search for spaces...',
               prefixIcon: Icons.search,
               keyboardType: TextInputType.text,
+              onChanged: (p0) {
+                print(p0);
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -49,6 +52,7 @@ class SpacesView extends GetView<SpacesController> {
                   InkWell(
                     onTap: () {
                       controller.isAllSpacesActive.value = true;
+                      controller.onSearchChangedForSpaces();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -82,6 +86,7 @@ class SpacesView extends GetView<SpacesController> {
                   InkWell(
                     onTap: () {
                       controller.isAllSpacesActive.value = false;
+                      controller.onSearchChangedForSpaces();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -270,8 +275,8 @@ class SpacesView extends GetView<SpacesController> {
   Expanded buildAllSpacesGrid(BuildContext context) {
     return Expanded(
       child:
-          controller.allSpacesList != null &&
-                  controller.allSpacesList.isNotEmpty
+          controller.filtredAllSpacesList != null &&
+                  controller.filtredAllSpacesList.isNotEmpty
               ? GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Number of columns
@@ -279,11 +284,13 @@ class SpacesView extends GetView<SpacesController> {
                   mainAxisSpacing: 10.0,
                   childAspectRatio: 2.9,
                 ),
-                itemCount: controller.allSpacesList.length, // Number of items
+                itemCount:
+                    controller.filtredAllSpacesList.length, // Number of items
                 itemBuilder: (context, index) {
                   return spaceTile(
-                    spaceTitle: controller.allSpacesList[index]!.name,
-                    isPrivate: controller.allSpacesList[index]!.isPrivate,
+                    spaceTitle: controller.filtredAllSpacesList[index]!.name,
+                    isPrivate:
+                        controller.filtredAllSpacesList[index]!.isPrivate,
                   );
                 },
               )

@@ -25,7 +25,14 @@ class FeedController extends GetxController {
           .then((value) {
             isLoading.value = false;
             if (value != null) {
-              feeds.value = value;
+              feeds.value =
+                  value
+                      .where(
+                        (feed) =>
+                            !(feed.space?.isPrivate == true &&
+                                feed.uid != currentUser.uid),
+                      )
+                      .toList();
             } else {
               AppMethod.snackbar(
                 "Feeds not found",

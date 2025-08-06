@@ -4,12 +4,7 @@ class SpaceModel {
   bool? isPrivate;
   String? name;
 
-  SpaceModel({
-    this.id,
-    this.uid,
-    this.isPrivate,
-    this.name,
-  });
+  SpaceModel({this.id, this.uid, this.isPrivate, this.name});
 
   // Factory constructor for creating a new instance from a map
   factory SpaceModel.fromJson(Map<String, dynamic> json) {
@@ -21,14 +16,23 @@ class SpaceModel {
     );
   }
 
+  factory SpaceModel.fromMap(Map<String, dynamic> map) {
+    return SpaceModel(
+      id: map['id'] as String,
+      uid: map['uid'] as String,
+      isPrivate: map['isPrivate'].toString() == 'true',
+      name: map['name'] as String,
+      // etc.
+    );
+  }
+
   // Converts the instance to a map
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'uid': uid,
-      'isPrivate': isPrivate,
-      'name': name,
-    };
+    return {'id': id, 'uid': uid, 'isPrivate': isPrivate, 'name': name};
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'id': id, 'uid': uid, 'isPrivate': isPrivate, 'name': name};
   }
 
   // Creates a copy of the current object with new values
