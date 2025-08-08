@@ -106,19 +106,19 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
 
         // Image Carousel
         Obx(() {
-          if (controller.feed.postImage!.isEmpty) return SizedBox.shrink();
+          if (controller.feed.postMedia!.isEmpty) return SizedBox.shrink();
           return Column(
             children: [
               SizedBox(
                 height: 250,
                 child: PageView.builder(
                   controller: pageController,
-                  itemCount: controller.feed.postImage!.length,
+                  itemCount: controller.feed.postMedia!.length,
                   itemBuilder: (context, index) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
-                        controller.feed.postImage![index],
+                        controller.feed.postMedia![index],
                         fit: BoxFit.cover,
                         width: double.infinity,
                       ),
@@ -127,10 +127,10 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
                 ),
               ),
               const SizedBox(height: 8),
-              if (controller.feed.postImage!.length > 1)
+              if (controller.feed.postMedia!.length > 1)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(controller.feed.postImage!.length, (
+                  children: List.generate(controller.feed.postMedia!.length, (
                     index,
                   ) {
                     bool isActive = index == currentPage.value;

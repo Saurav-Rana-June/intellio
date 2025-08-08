@@ -9,10 +9,11 @@ class FeedTileModel {
   final String? feedTitle;
   final String? feedDescription;
   final String? feedType;
+  final String? contentLink;
   final String? currentLikes;
   final String? currentComments;
   final String? currentShare;
-  final List<String>? postImage;
+  final List<String>? postMedia;
 
   FeedTileModel({
     this.uid,
@@ -23,10 +24,11 @@ class FeedTileModel {
     this.feedTitle,
     this.feedDescription,
     this.feedType,
+    this.contentLink,
     this.currentLikes,
     this.currentComments,
     this.currentShare,
-    this.postImage,
+    this.postMedia,
   });
 
   factory FeedTileModel.fromMap(Map<String, dynamic> map) {
@@ -39,12 +41,12 @@ class FeedTileModel {
       feedTitle: map['feedTitle'] as String?,
       feedDescription: map['feedDescription'] as String?,
       feedType: map['feedType'] as String?,
+      contentLink: map['contentLink'] as String?,
       currentLikes: map['currentLikes'] as String?,
       currentComments: map['currentComments'] as String?,
       currentShare: map['currentShare'] as String?,
-      postImage: map['postImage'] != null
-          ? List<String>.from(map['postImage'])
-          : [],
+      postMedia:
+          map['postMedia'] != null ? List<String>.from(map['postMedia']) : [],
     );
   }
 
@@ -58,10 +60,11 @@ class FeedTileModel {
       'feedTitle': feedTitle,
       'feedDescription': feedDescription,
       'feedType': feedType,
+      'contentLink': contentLink,
       'currentLikes': currentLikes,
       'currentComments': currentComments,
       'currentShare': currentShare,
-      'postImage': postImage ?? [],
+      'postMedia': postMedia ?? [],
     };
   }
 }

@@ -212,7 +212,7 @@ class _AddFeedViewState extends State<AddFeedView> {
             Text('Link', style: r16.copyWith()),
             SizedBox(height: 8),
             CustomFormField(
-              controller: TextEditingController(),
+              controller: spacesController.feedLinkController,
               hintText: 'https://...',
               prefixIcon: Icons.link,
               keyboardType: TextInputType.name,

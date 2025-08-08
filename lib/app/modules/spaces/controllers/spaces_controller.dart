@@ -242,13 +242,15 @@ class SpacesController extends GetxController {
         userProfileImage: currentUser?.photoUrl,
         userName: currentUser?.name,
         space: getSpaceByName(genreTextController.text),
+        feedType: selectedUploadType?.value,
         postedTime: DateTime.now().toIso8601String(),
         feedTitle: feedTitleController.text,
         feedDescription: feedDescriptionController.text,
+        contentLink: feedLinkController.text,
         currentLikes: '0',
         currentComments: '0',
         currentShare: '0',
-        postImage: uploadedUrls,
+        postMedia: uploadedUrls,
       ),
     );
 

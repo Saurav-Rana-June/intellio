@@ -1,14 +1,20 @@
+import 'package:Intellio/app/data/enums/snackbar_enum.dart';
+import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/methods/datetime_methods.dart';
+import 'package:Intellio/app/modules/feed/controllers/feed_controller.dart';
 import 'package:Intellio/app/routes/app_pages.dart';
 import 'package:Intellio/app/widgets/image_viewer.widget.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
+import 'package:timeago/timeago.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../infrastructure/theme/theme.dart';
 import '../data/models/feed_models/feed_model.dart';
-import '../modules/feed/controllers/feed_controller.dart';
+import 'package:video_player/video_player.dart';
 
 class FeedTileWidget extends StatefulWidget {
   final FeedTileModel feed;
@@ -22,6 +28,7 @@ class FeedTileWidget extends StatefulWidget {
 class _FeedTileWidgetState extends State<FeedTileWidget> {
   final PageController pageController = PageController();
   RxInt currentPage = 0.obs;
+  final controller = Get.put(FeedController());
 
   @override
   void initState() {
@@ -123,7 +130,11 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
         const SizedBox(height: 16),
 
         // Image Carousel
-        buildImageSection(context),
+        if (widget.feed.postMedia != null && widget.feed.postMedia!.isNotEmpty)
+          buildMediaSection(context),
+        if (widget.feed.contentLink != null &&
+            widget.feed.contentLink!.isNotEmpty)
+          buildLinkSection(),
         const SizedBox(height: 24),
 
         // Like, Comment and Share
@@ -240,27 +251,238 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
     );
   }
 
-  Column buildImageSection(BuildContext context) {
+  InkWell buildLinkSection() {
+    return InkWell(
+      onTap: () async {
+        final link = widget.feed.contentLink;
+        if (link != null) {
+          await launchUrl(
+            Uri.parse(link),
+            mode: LaunchMode.externalApplication,
+          );
+        } else {
+          AppMethod.snackbar(
+            "Unreachable Link",
+            "Unable to open link...",
+            SnackBarType.ERROR,
+          );
+        }
+      },
+      child: Text(
+        widget.feed.contentLink ?? "Invalid Link",
+        style: r14.copyWith(color: infoColor),
+      ),
+    );
+  }
+
+  Widget buildMediaSection(BuildContext context) {
+    // ['Link', 'Video', 'Image', 'Audio', 'PDF', 'Zip Archive']
+    switch (widget.feed.feedType) {
+      case 'Image':
+        return buildImageViewer(context);
+
+      case 'Video':
+        return buildVideoViewer();
+
+      case 'Audio':
+        return buildAudioListener();
+
+      default:
+        return Column();
+    }
+  }
+
+  Column buildAudioListener() {
+    return Column(
+      children: [
+        Container(
+          height: 80,
+          width: Get.width,
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: regular50.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: widget.feed.postMedia!.length,
+            itemBuilder: (context, index) {
+              return Row(
+                children: [
+                  Obx(
+                    () => IconButton(
+                      onPressed: () {
+                        controller.playAudio(widget.feed.postMedia![index]);
+                      },
+                      icon:
+                          controller.isAudioLoading.value
+                              ? Container(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(),
+                              )
+                              : Icon(
+                                controller.isPlaying.value
+                                    ? Icons.stop_rounded
+                                    : Icons.play_arrow,
+                              ),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(primary),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(
+                          () => Slider(
+                            padding: EdgeInsets.all(0),
+                            min: 0,
+                            max: controller.duration.value.inSeconds.toDouble(),
+                            value:
+                                controller.position.value.inSeconds.toDouble(),
+                            onChanged: (value) async {
+                              final position = Duration(seconds: value.toInt());
+                              await controller.audioPlayer.seek(position);
+                              await controller.audioPlayer.resume();
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Obx(
+                          () => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                controller.formatDuration(
+                                  controller.position.value,
+                                ),
+                                style: r14.copyWith(),
+                              ),
+                              Text(
+                                controller.formatDuration(
+                                  controller.duration.value -
+                                      controller.position.value,
+                                ),
+                                style: r14.copyWith(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+            onPageChanged: (index) {
+              currentPage.value = index;
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (widget.feed.postMedia!.length > 1)
+          Obx(() {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.feed.postMedia!.length, (index) {
+                bool isActive = index == currentPage.value;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 4,
+                  width: isActive ? 16 : 8,
+                  decoration: BoxDecoration(
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            );
+          }),
+      ],
+    );
+  }
+
+  Column buildVideoViewer() {
     return Column(
       children: [
         SizedBox(
           height: 250,
           child: PageView.builder(
             controller: pageController,
-            itemCount: widget.feed.postImage!.length,
+            itemCount: widget.feed.postMedia!.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {},
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Chewie(
+                    controller: ChewieController(
+                      videoPlayerController: VideoPlayerController.networkUrl(
+                        Uri.parse(widget.feed.postMedia![index]),
+                      ),
+                      autoPlay: true,
+                      looping: false,
+                    ),
+                  ),
+                ),
+              );
+            },
+            onPageChanged: (index) {
+              currentPage.value = index;
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (widget.feed.postMedia!.length > 1)
+          Obx(() {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.feed.postMedia!.length, (index) {
+                bool isActive = index == currentPage.value;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 4,
+                  width: isActive ? 16 : 8,
+                  decoration: BoxDecoration(
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            );
+          }),
+      ],
+    );
+  }
+
+  Column buildImageViewer(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 250,
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: widget.feed.postMedia!.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
                   Get.to(
                     () => ImageViewerWidget(
-                      imageUrl: widget.feed.postImage![index],
+                      imageUrl: widget.feed.postMedia![index],
                     ),
                   );
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    widget.feed.postImage![index],
+                    widget.feed.postMedia![index],
                     fit: BoxFit.contain,
                     width: double.infinity,
                     loadingBuilder: (context, child, loadingProgress) {
@@ -271,7 +493,7 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                           value:
                               loadingProgress.expectedTotalBytes != null
                                   ? loadingProgress.cumulativeBytesLoaded /
-                                      (loadingProgress.expectedTotalBytes!)
+                                      loadingProgress.expectedTotalBytes!
                                   : null,
                         ),
                       );
@@ -283,14 +505,17 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                 ),
               );
             },
+            onPageChanged: (index) {
+              currentPage.value = index;
+            },
           ),
         ),
         const SizedBox(height: 8),
-        if (widget.feed.postImage!.length > 1)
+        if (widget.feed.postMedia!.length > 1)
           Obx(() {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(widget.feed.postImage!.length, (index) {
+              children: List.generate(widget.feed.postMedia!.length, (index) {
                 bool isActive = index == currentPage.value;
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
