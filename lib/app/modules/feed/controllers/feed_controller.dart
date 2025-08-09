@@ -7,11 +7,15 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 
 class FeedController extends GetxController {
+  var currentFeedId = "".obs;
+  var currentAudioIndex = (-1).obs;
+
   final audioPlayer = AudioPlayer();
   RxList<FeedTileModel> feeds = <FeedTileModel>[].obs;
   RxBool isLoading = false.obs;
   RxBool isPlaying = false.obs;
   RxBool isAudioLoading = false.obs;
+
   var duration = Duration.zero.obs;
   var position = Duration.zero.obs;
 
@@ -44,7 +48,18 @@ class FeedController extends GetxController {
     return "$minutes:$seconds";
   }
 
-  Future playAudio(String url) async {
+  Future playAudio({
+    required String url,
+    required String feedId,
+    required int mediaIndex,
+  }) async {
+    if (currentFeedId.value != feedId ||
+        currentAudioIndex.value != mediaIndex) {
+      await audioPlayer.stop();
+      currentFeedId.value = feedId;
+      currentAudioIndex.value = mediaIndex;
+    }
+
     if (isPlaying.value) {
       await audioPlayer.pause();
     } else {

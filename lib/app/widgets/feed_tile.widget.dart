@@ -284,9 +284,127 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
       case 'Audio':
         return buildAudioListener();
 
+      case 'PDF':
+        return buildPDFViewer();
+
       default:
         return Column();
     }
+  }
+
+  Column buildPDFViewer() {
+    return Column(
+      children: [
+        // Container(
+        //   height: 80,
+        //   width: Get.width,
+        //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        //   decoration: BoxDecoration(
+        //     color: regular50.withValues(alpha: 0.3),
+        //     borderRadius: BorderRadius.circular(8),
+        //   ),
+        //   child: PageView.builder(
+        //     controller: pageController,
+        //     itemCount: widget.feed.postMedia!.length,
+        //     itemBuilder: (context, index) {
+        //       return Row(
+        //         children: [
+        //           Obx(
+        //             () => IconButton(
+        //               onPressed: () {
+        //                 controller.playAudio(widget.feed.postMedia![index]);
+        //               },
+        //               icon:
+        //                   controller.isAudioLoading.value
+        //                       ? Container(
+        //                         height: 20,
+        //                         width: 20,
+        //                         child: CircularProgressIndicator(),
+        //                       )
+        //                       : Icon(
+        //                         controller.isPlaying.value
+        //                             ? Icons.stop_rounded
+        //                             : Icons.play_arrow,
+        //                       ),
+        //               style: ButtonStyle(
+        //                 backgroundColor: WidgetStatePropertyAll(primary),
+        //               ),
+        //             ),
+        //           ),
+        //           SizedBox(width: 16),
+        //           Expanded(
+        //             child: Column(
+        //               mainAxisAlignment: MainAxisAlignment.center,
+        //               children: [
+        //                 Obx(
+        //                   () => Slider(
+        //                     padding: EdgeInsets.all(0),
+        //                     min: 0,
+        //                     max: controller.duration.value.inSeconds.toDouble(),
+        //                     value:
+        //                         controller.position.value.inSeconds.toDouble(),
+        //                     onChanged: (value) async {
+        //                       final position = Duration(seconds: value.toInt());
+        //                       await controller.audioPlayer.seek(position);
+        //                       await controller.audioPlayer.resume();
+        //                     },
+        //                   ),
+        //                 ),
+        //                 SizedBox(height: 8),
+        //                 Obx(
+        //                   () => Row(
+        //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                     children: [
+        //                       Text(
+        //                         controller.formatDuration(
+        //                           controller.position.value,
+        //                         ),
+        //                         style: r14.copyWith(),
+        //                       ),
+        //                       Text(
+        //                         controller.formatDuration(
+        //                           controller.duration.value -
+        //                               controller.position.value,
+        //                         ),
+        //                         style: r14.copyWith(),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ],
+        //       );
+        //     },
+        //     onPageChanged: (index) {
+        //       currentPage.value = index;
+        //     },
+        //   ),
+        // ),
+        const SizedBox(height: 8),
+        if (widget.feed.postMedia!.length > 1)
+          Obx(() {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.feed.postMedia!.length, (index) {
+                bool isActive = index == currentPage.value;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 4,
+                  width: isActive ? 16 : 8,
+                  decoration: BoxDecoration(
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            );
+          }),
+      ],
+    );
   }
 
   Column buildAudioListener() {
@@ -295,83 +413,135 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
         Container(
           height: 80,
           width: Get.width,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: regular50.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(8),
-          ),
           child: PageView.builder(
             controller: pageController,
             itemCount: widget.feed.postMedia!.length,
             itemBuilder: (context, index) {
-              return Row(
-                children: [
-                  Obx(
-                    () => IconButton(
-                      onPressed: () {
-                        controller.playAudio(widget.feed.postMedia![index]);
-                      },
-                      icon:
-                          controller.isAudioLoading.value
-                              ? Container(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
-                              )
-                              : Icon(
-                                controller.isPlaying.value
-                                    ? Icons.stop_rounded
-                                    : Icons.play_arrow,
-                              ),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(primary),
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                  color: regular50.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Obx(
+                      () => IconButton(
+                        onPressed: () {
+                          controller.playAudio(
+                            url: widget.feed.postMedia![index],
+                            feedId:
+                                widget.feed.uid ??
+                                widget.feed.hashCode.toString(), // unique ID
+                            mediaIndex: index,
+                          );
+                        },
+                        icon:
+                            controller.isAudioLoading.value &&
+                                    controller.currentFeedId.value ==
+                                        (widget.feed.uid ??
+                                            widget.feed.hashCode.toString()) &&
+                                    controller.currentAudioIndex.value == index
+                                ? Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(),
+                                )
+                                : Icon(
+                                  controller.isPlaying.value &&
+                                          controller.currentFeedId.value ==
+                                              (widget.feed.uid ??
+                                                  widget.feed.hashCode
+                                                      .toString()) &&
+                                          controller.currentAudioIndex.value ==
+                                              index
+                                      ? Icons.stop_rounded
+                                      : Icons.play_arrow,
+                                ),
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(primary),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Obx(
-                          () => Slider(
-                            padding: EdgeInsets.all(0),
-                            min: 0,
-                            max: controller.duration.value.inSeconds.toDouble(),
-                            value:
-                                controller.position.value.inSeconds.toDouble(),
-                            onChanged: (value) async {
-                              final position = Duration(seconds: value.toInt());
-                              await controller.audioPlayer.seek(position);
-                              await controller.audioPlayer.resume();
-                            },
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Obx(
+                            () => Slider(
+                              padding: EdgeInsets.all(0),
+                              min: 0,
+                              max:
+                                  (controller.currentFeedId.value ==
+                                              (widget.feed.uid ??
+                                                  widget.feed.hashCode
+                                                      .toString()) &&
+                                          controller.currentAudioIndex.value ==
+                                              index)
+                                      ? controller.duration.value.inSeconds
+                                          .toDouble()
+                                      : 0,
+                              value:
+                                  (controller.currentFeedId.value ==
+                                              (widget.feed.uid ??
+                                                  widget.feed.hashCode
+                                                      .toString()) &&
+                                          controller.currentAudioIndex.value ==
+                                              index)
+                                      ? controller.position.value.inSeconds
+                                          .toDouble()
+                                      : 0,
+                              onChanged: (value) async {
+                                final position = Duration(
+                                  seconds: value.toInt(),
+                                );
+                                await controller.audioPlayer.seek(position);
+                                await controller.audioPlayer.resume();
+                              },
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Obx(
-                          () => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                controller.formatDuration(
-                                  controller.position.value,
+                          SizedBox(height: 8),
+                          Obx(
+                            () => Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  (controller.currentFeedId.value ==
+                                              (widget.feed.uid ??
+                                                  widget.feed.hashCode
+                                                      .toString()) &&
+                                          controller.currentAudioIndex.value ==
+                                              index)
+                                      ? controller.formatDuration(
+                                        controller.position.value,
+                                      )
+                                      : "00:00",
+                                  style: r14.copyWith(),
                                 ),
-                                style: r14.copyWith(),
-                              ),
-                              Text(
-                                controller.formatDuration(
-                                  controller.duration.value -
-                                      controller.position.value,
+                                Text(
+                                  (controller.currentFeedId.value ==
+                                              (widget.feed.uid ??
+                                                  widget.feed.hashCode
+                                                      .toString()) &&
+                                          controller.currentAudioIndex.value ==
+                                              index)
+                                      ? controller.formatDuration(
+                                        controller.duration.value -
+                                            controller.position.value,
+                                      )
+                                      : "00:00",
+                                  style: r14.copyWith(),
                                 ),
-                                style: r14.copyWith(),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
             onPageChanged: (index) {
