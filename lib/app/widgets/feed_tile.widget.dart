@@ -4,13 +4,11 @@ import 'package:Intellio/app/data/methods/datetime_methods.dart';
 import 'package:Intellio/app/modules/feed/controllers/feed_controller.dart';
 import 'package:Intellio/app/routes/app_pages.dart';
 import 'package:Intellio/app/widgets/image_viewer.widget.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../infrastructure/theme/theme.dart';
 import '../data/models/feed_models/feed_model.dart';
@@ -276,7 +274,6 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
   }
 
   Widget buildMediaSection(BuildContext context) {
-    // ['Link', 'Video', 'Image', 'Audio', 'PDF', 'Zip Archive']
     switch (widget.feed.feedType) {
       case 'Image':
         return buildImageViewer(context);
@@ -416,18 +413,15 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
             controller: pageController,
             itemCount: widget.feed.postMedia!.length,
             itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {},
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Chewie(
-                    controller: ChewieController(
-                      videoPlayerController: VideoPlayerController.networkUrl(
-                        Uri.parse(widget.feed.postMedia![index]),
-                      ),
-                      autoPlay: true,
-                      looping: false,
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Chewie(
+                  controller: ChewieController(
+                    videoPlayerController: VideoPlayerController.networkUrl(
+                      Uri.parse(widget.feed.postMedia![index]),
                     ),
+                    autoPlay: true,
+                    looping: false,
                   ),
                 ),
               );
