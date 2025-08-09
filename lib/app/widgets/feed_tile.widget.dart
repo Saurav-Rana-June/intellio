@@ -4,11 +4,13 @@ import 'package:Intellio/app/data/methods/datetime_methods.dart';
 import 'package:Intellio/app/modules/feed/controllers/feed_controller.dart';
 import 'package:Intellio/app/routes/app_pages.dart';
 import 'package:Intellio/app/widgets/image_viewer.widget.dart';
+import 'package:Intellio/app/widgets/pdf_viewer.widget.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../infrastructure/theme/theme.dart';
 import '../data/models/feed_models/feed_model.dart';
@@ -287,101 +289,165 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
       case 'PDF':
         return buildPDFViewer();
 
+      case 'Zip Archive':
+        return buildZipFileViewer();
+
       default:
         return Column();
     }
   }
 
+  Column buildZipFileViewer() {
+    return Column(
+      children: [
+        Container(
+          height: 80,
+          width: Get.width,
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: widget.feed.postMedia!.length,
+            itemBuilder: (context, index) {
+              String url = widget.feed.postMedia![index];
+              String fileName = url
+                  .split('/')
+                  .last
+                  .split('.')
+                  .first
+                  .replaceAll('%20', ' ');
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: regular50.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.folder_zip),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(primary),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${fileName}.zip', style: r16.copyWith()),
+                        GestureDetector(
+                          onTap: () {
+                           controller.downloadZipFile(url);
+                          },
+                          child: Text(
+                            'Dowload Zip',
+                            style: r12.copyWith(
+                              color: primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+            onPageChanged: (index) {
+              currentPage.value = index;
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (widget.feed.postMedia!.length > 1)
+          Obx(() {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(widget.feed.postMedia!.length, (index) {
+                bool isActive = index == currentPage.value;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 4,
+                  width: isActive ? 16 : 8,
+                  decoration: BoxDecoration(
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                );
+              }),
+            );
+          }),
+      ],
+    );
+  }
+
   Column buildPDFViewer() {
     return Column(
       children: [
-        // Container(
-        //   height: 80,
-        //   width: Get.width,
-        //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        //   decoration: BoxDecoration(
-        //     color: regular50.withValues(alpha: 0.3),
-        //     borderRadius: BorderRadius.circular(8),
-        //   ),
-        //   child: PageView.builder(
-        //     controller: pageController,
-        //     itemCount: widget.feed.postMedia!.length,
-        //     itemBuilder: (context, index) {
-        //       return Row(
-        //         children: [
-        //           Obx(
-        //             () => IconButton(
-        //               onPressed: () {
-        //                 controller.playAudio(widget.feed.postMedia![index]);
-        //               },
-        //               icon:
-        //                   controller.isAudioLoading.value
-        //                       ? Container(
-        //                         height: 20,
-        //                         width: 20,
-        //                         child: CircularProgressIndicator(),
-        //                       )
-        //                       : Icon(
-        //                         controller.isPlaying.value
-        //                             ? Icons.stop_rounded
-        //                             : Icons.play_arrow,
-        //                       ),
-        //               style: ButtonStyle(
-        //                 backgroundColor: WidgetStatePropertyAll(primary),
-        //               ),
-        //             ),
-        //           ),
-        //           SizedBox(width: 16),
-        //           Expanded(
-        //             child: Column(
-        //               mainAxisAlignment: MainAxisAlignment.center,
-        //               children: [
-        //                 Obx(
-        //                   () => Slider(
-        //                     padding: EdgeInsets.all(0),
-        //                     min: 0,
-        //                     max: controller.duration.value.inSeconds.toDouble(),
-        //                     value:
-        //                         controller.position.value.inSeconds.toDouble(),
-        //                     onChanged: (value) async {
-        //                       final position = Duration(seconds: value.toInt());
-        //                       await controller.audioPlayer.seek(position);
-        //                       await controller.audioPlayer.resume();
-        //                     },
-        //                   ),
-        //                 ),
-        //                 SizedBox(height: 8),
-        //                 Obx(
-        //                   () => Row(
-        //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                     children: [
-        //                       Text(
-        //                         controller.formatDuration(
-        //                           controller.position.value,
-        //                         ),
-        //                         style: r14.copyWith(),
-        //                       ),
-        //                       Text(
-        //                         controller.formatDuration(
-        //                           controller.duration.value -
-        //                               controller.position.value,
-        //                         ),
-        //                         style: r14.copyWith(),
-        //                       ),
-        //                     ],
-        //                   ),
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         ],
-        //       );
-        //     },
-        //     onPageChanged: (index) {
-        //       currentPage.value = index;
-        //     },
-        //   ),
-        // ),
+        Container(
+          height: 80,
+          width: Get.width,
+          child: PageView.builder(
+            controller: pageController,
+            itemCount: widget.feed.postMedia!.length,
+            itemBuilder: (context, index) {
+              String url = widget.feed.postMedia![index];
+              String fileName = url
+                  .split('/')
+                  .last
+                  .split('.')
+                  .first
+                  .replaceAll('%20', ' ');
+              return Container(
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: regular50.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.picture_as_pdf_rounded),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(primary),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${fileName}.pdf', style: r16.copyWith()),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(
+                              () => PdfViewScreen(url: url, header: fileName),
+                            );
+                          },
+                          child: Text(
+                            'View PDF',
+                            style: r12.copyWith(
+                              color: primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+            onPageChanged: (index) {
+              currentPage.value = index;
+            },
+          ),
+        ),
         const SizedBox(height: 8),
         if (widget.feed.postMedia!.length > 1)
           Obx(() {

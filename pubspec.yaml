@@ -34,6 +34,10 @@ dependencies:
   chewie: ^1.12.1
   video_player: ^2.10.0
   audioplayers: ^6.5.0
+  syncfusion_flutter_pdfviewer: ^30.2.4
+  path_provider: ^2.1.5
+  open_file: ^3.5.10
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:

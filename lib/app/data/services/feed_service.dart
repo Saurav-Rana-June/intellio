@@ -19,7 +19,9 @@ class FeedService {
   }) async {
     try {
       final filePath =
-          '$postId/${DateTime.now().millisecondsSinceEpoch}.$extension';
+          extension == 'pdf' || extension == 'zip'
+              ? '${file.path.split('/').last }'
+              : '$postId/${DateTime.now().millisecondsSinceEpoch}.$extension';
       await _feedBucket.upload(filePath, file);
       return _feedBucket.getPublicUrl(filePath);
     } catch (e) {

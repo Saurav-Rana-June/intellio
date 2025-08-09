@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
 import 'package:Intellio/app/data/services/feed_service.dart';
 import 'package:all/all.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FeedController extends GetxController {
   var currentFeedId = "".obs;
@@ -65,6 +70,36 @@ class FeedController extends GetxController {
     } else {
       isAudioLoading.value = true;
       await audioPlayer.play(UrlSource(url));
+    }
+  }
+
+  Future<void> downloadZipFile(String fileUrl) async {
+    try {
+      // Step 1: Get a directory to save the file
+      Directory dir = await getApplicationDocumentsDirectory();
+      String filePath = "${dir.path}/downloaded.zip";
+
+      // Step 2: Start downloading
+      Dio dio = Dio();
+      await dio.download(
+        fileUrl,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            print("Progress: ${(received / total * 100).toStringAsFixed(0)}%");
+          }
+        },
+      );
+
+      AppMethod.snackbar(
+        "Downloaded Successfully",
+        filePath,
+        SnackBarType.SUCCESS,
+      );
+      await OpenFile.open(filePath);
+    } catch (e) {
+      AppMethod.snackbar("Download Failed", "${e}", SnackBarType.ERROR);
+      print(e);
     }
   }
 
