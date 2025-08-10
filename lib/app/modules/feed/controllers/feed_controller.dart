@@ -10,8 +10,6 @@ import 'package:all/all.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FeedController extends GetxController {
   var currentFeedId = "".obs;
@@ -127,6 +125,15 @@ class FeedController extends GetxController {
               ),
             ) ??
             false;
+
+        if (!downloadAgain) {
+          AppMethod.snackbar(
+            "Download Cancelled",
+            "File already exists.",
+            SnackBarType.WARNING,
+          );
+          return;
+        }
       }
       Get.dialog(
         Obx(

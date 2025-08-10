@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class FeedService {
   static final _feedsCollection = FirebaseFirestore.instance.collection(
@@ -20,9 +21,13 @@ class FeedService {
     try {
       final filePath =
           extension == 'pdf' || extension == 'zip'
-              ? '${file.path.split('/').last }'
+              ? '${file.path.split('/').last}'
               : '$postId/${DateTime.now().millisecondsSinceEpoch}.$extension';
-      await _feedBucket.upload(filePath, file);
+      await _feedBucket.upload(
+        filePath,
+        file,
+        fileOptions: supabase.FileOptions(upsert: true),
+      );
       return _feedBucket.getPublicUrl(filePath);
     } catch (e) {
       print('Failed to upload feed file: $e');

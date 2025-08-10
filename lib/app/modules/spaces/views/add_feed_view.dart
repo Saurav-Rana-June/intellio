@@ -485,6 +485,7 @@ class _AddFeedViewState extends State<AddFeedView> {
                           horizontal: 15,
                           vertical: 3,
                         ),
+                        margin: EdgeInsets.only(bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: primary, width: 1),
