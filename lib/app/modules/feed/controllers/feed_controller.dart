@@ -4,6 +4,8 @@ import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
 import 'package:Intellio/app/data/services/feed_service.dart';
+import 'package:Intellio/app/widgets/modals/popup.modal.dart';
+import 'package:Intellio/infrastructure/theme/theme.dart';
 import 'package:all/all.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +16,8 @@ import 'package:path_provider/path_provider.dart';
 class FeedController extends GetxController {
   var currentFeedId = "".obs;
   var currentAudioIndex = (-1).obs;
+
+  var progress = 0.0.obs;
 
   final audioPlayer = AudioPlayer();
   RxList<FeedTileModel> feeds = <FeedTileModel>[].obs;
@@ -73,33 +77,118 @@ class FeedController extends GetxController {
     }
   }
 
-  Future<void> downloadZipFile(String fileUrl) async {
+  Future<void> downloadZipFile(String fileUrl, String fileName) async {
     try {
-      // Step 1: Get a directory to save the file
-      Directory dir = await getApplicationDocumentsDirectory();
-      String filePath = "${dir.path}/downloaded.zip";
+      progress.value = 0;
 
-      // Step 2: Start downloading
+      String filePath = "/storage/emulated/0/Download/$fileName.zip";
+
+      File file = File(filePath);
+
+      if (await file.exists()) {
+        bool downloadAgain =
+            await Get.dialog<bool>(
+              CustomPopupModal(
+                title: 'File Already Exists',
+                content: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      Text(
+                        'The file "$fileName.zip" already exists in Downloads. Do you want to download it again and overwrite it ?',
+                        style: r14,
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () => Get.back(result: false),
+                            child: Text(
+                              'Cancel',
+                              style: r16.copyWith(color: primary),
+                            ),
+                          ),
+
+                          ElevatedButton(
+                            onPressed: () => Get.back(result: true),
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStatePropertyAll(primary),
+                            ),
+                            child: Text(
+                              'Download Again',
+                              style: r16.copyWith(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ) ??
+            false;
+      }
+      Get.dialog(
+        Obx(
+          () => CustomPopupModal(
+            title: 'Downloading',
+            content: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  LinearProgressIndicator(value: progress.value),
+                  SizedBox(height: 8),
+                  Text(
+                    "${(progress.value * 100).toStringAsFixed(0)}%",
+                    style: r14.copyWith(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: Text(
+                          'Back',
+                          style: r16.copyWith(color: primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
       Dio dio = Dio();
       await dio.download(
         fileUrl,
         filePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
-            print("Progress: ${(received / total * 100).toStringAsFixed(0)}%");
+            progress.value = received / total;
           }
         },
       );
+
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
 
       AppMethod.snackbar(
         "Downloaded Successfully",
         filePath,
         SnackBarType.SUCCESS,
       );
-      await OpenFile.open(filePath);
     } catch (e) {
-      AppMethod.snackbar("Download Failed", "${e}", SnackBarType.ERROR);
-      print(e);
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      AppMethod.snackbar("Download Failed", "$e", SnackBarType.ERROR);
     }
   }
 

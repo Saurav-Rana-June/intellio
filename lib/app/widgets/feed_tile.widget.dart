@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Intellio/app/data/enums/snackbar_enum.dart';
 import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/methods/datetime_methods.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../infrastructure/theme/theme.dart';
@@ -337,8 +340,8 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                       children: [
                         Text('${fileName}.zip', style: r16.copyWith()),
                         GestureDetector(
-                          onTap: () {
-                           controller.downloadZipFile(url);
+                          onTap: () async {
+                            controller.downloadZipFile(url, fileName);
                           },
                           child: Text(
                             'Dowload Zip',
