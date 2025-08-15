@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Intellio/app/data/models/feed_models/feed_comment_model.dart';
 import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,7 +38,26 @@ class FeedService {
 
   static Future<bool> addFeed(FeedTileModel model) async {
     try {
-      await _feedsCollection.add(model.toMap());
+      final docRef = _feedsCollection.doc();
+      final feedWithId = model.toMap();
+      feedWithId['docId'] = docRef.id;
+
+      await docRef.set(feedWithId);
+      return true;
+    } catch (e) {
+      throw Exception("Failed to add feed: $e");
+    }
+  }
+
+  static Future<bool> addComments({
+    required String feedId,
+    required FeedCommentModel comment,
+  }) async {
+    try {
+       await _feedsCollection.doc(feedId).update({
+      'commentSection': FieldValue.arrayUnion([comment.toMap()]),
+    });
+
       return true;
     } catch (e) {
       throw Exception("Failed to add feed: $e");

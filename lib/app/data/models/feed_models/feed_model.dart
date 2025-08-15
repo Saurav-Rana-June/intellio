@@ -1,7 +1,9 @@
+import 'package:Intellio/app/data/models/feed_models/feed_comment_model.dart';
 import 'package:Intellio/app/data/models/space_models/space_model.dart';
 
 class FeedTileModel {
   final String? uid;
+  final String? docId;
   final String? userProfileImage;
   final String? userName;
   final SpaceModel? space;
@@ -14,9 +16,11 @@ class FeedTileModel {
   final String? currentComments;
   final String? currentShare;
   final List<String>? postMedia;
+  final List<FeedCommentModel>? commentSection;
 
   FeedTileModel({
     this.uid,
+    this.docId,
     this.userProfileImage,
     this.userName,
     this.space,
@@ -29,11 +33,13 @@ class FeedTileModel {
     this.currentComments,
     this.currentShare,
     this.postMedia,
+    this.commentSection,
   });
 
   factory FeedTileModel.fromMap(Map<String, dynamic> map) {
     return FeedTileModel(
       uid: map['uid'] as String?,
+      docId: map['docId'] as String?,
       userProfileImage: map['userProfileImage'] as String?,
       userName: map['userName'] as String?,
       space: map['space'] != null ? SpaceModel.fromMap(map['space']) : null,
@@ -47,12 +53,21 @@ class FeedTileModel {
       currentShare: map['currentShare'] as String?,
       postMedia:
           map['postMedia'] != null ? List<String>.from(map['postMedia']) : [],
+      commentSection:
+          map['commentSection'] != null
+              ? List<FeedCommentModel>.from(
+                (map['commentSection'] as List).map(
+                  (e) => FeedCommentModel.fromMap(e as Map<String, dynamic>),
+                ),
+              )
+              : [],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
+      'docId': docId,
       'userProfileImage': userProfileImage,
       'userName': userName,
       'space': space?.toMap(),
@@ -65,6 +80,7 @@ class FeedTileModel {
       'currentComments': currentComments,
       'currentShare': currentShare,
       'postMedia': postMedia ?? [],
+      'commentSection': commentSection?.map((c) => c.toMap()).toList() ?? [],
     };
   }
 }

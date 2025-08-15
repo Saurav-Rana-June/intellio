@@ -22,6 +22,7 @@ class FeedController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isPlaying = false.obs;
   RxBool isAudioLoading = false.obs;
+  RxBool isFavorite = false.obs;
 
   var duration = Duration.zero.obs;
   var position = Duration.zero.obs;
@@ -240,5 +241,9 @@ class FeedController extends GetxController {
         SnackBarType.ERROR,
       );
     }
+  }
+
+  addPostToFav() {
+    isFavorite.value = !isFavorite.value;
   }
 }

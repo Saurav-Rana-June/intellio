@@ -5,6 +5,7 @@ import 'package:Intellio/app/data/methods/app_methods.dart';
 import 'package:Intellio/app/data/methods/datetime_methods.dart';
 import 'package:Intellio/app/modules/feed/controllers/feed_controller.dart';
 import 'package:Intellio/app/routes/app_pages.dart';
+import 'package:Intellio/app/widgets/expandable_text.widget.dart';
 import 'package:Intellio/app/widgets/image_viewer.widget.dart';
 import 'package:Intellio/app/widgets/pdf_viewer.widget.dart';
 import 'package:chewie/chewie.dart';
@@ -21,8 +22,9 @@ import 'package:video_player/video_player.dart';
 
 class FeedTileWidget extends StatefulWidget {
   final FeedTileModel feed;
+  bool? fromFeedDetail;
 
-  FeedTileWidget({super.key, required this.feed});
+  FeedTileWidget({super.key, required this.feed, this.fromFeedDetail = false});
 
   @override
   State<FeedTileWidget> createState() => _FeedTileWidgetState();
@@ -132,122 +134,141 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
         ),
         const SizedBox(height: 16),
 
-        // Image Carousel
+        // Main Content
         if (widget.feed.postMedia != null && widget.feed.postMedia!.isNotEmpty)
           buildMediaSection(context),
         if (widget.feed.contentLink != null &&
             widget.feed.contentLink!.isNotEmpty)
           buildLinkSection(),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
+
+        if (widget.fromFeedDetail == true)
+          ExpandableText(
+            text: widget.feed.feedDescription ?? '',
+            style: r16.copyWith(fontWeight: FontWeight.w500),
+            maxLines: 15,
+          ),
+        // const SizedBox(height: 24),
 
         // Like, Comment and Share
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/favourite.svg',
-                      height: 20,
-                      width: 20,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).textTheme.bodyMedium!.color!,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Row(
+        //       children: [
+        //         Row(
+        //           children: [
+        //             Obx(
+        //               () => GestureDetector(
+        //                 onTap: () {
+        //                   controller.addPostToFav();
+        //                 },
+        //                 child: Icon(
+        //                   controller.isFavorite.value
+        //                       ? Icons.favorite
+        //                       : Icons.favorite_border,
+        //                   size: 21,
+        //                   color:
+        //                       controller.isFavorite.value
+        //                           ? primary
+        //                           : Theme.of(
+        //                             context,
+        //                           ).textTheme.bodyMedium!.color,
+        //                 ),
+        //               ),
+        //             ),
 
-                    SizedBox(width: 5),
-                    if (widget.feed.currentLikes != null)
-                      Text(
-                        widget.feed.currentLikes ?? "O",
-                        style: r16.copyWith(),
-                      )
-                    else
-                      SizedBox(),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/comment.svg',
-                      height: 20,
-                      width: 20,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).textTheme.bodyMedium!.color!,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+        //             SizedBox(width: 5),
+        //             if (widget.feed.currentLikes != null)
+        //               Text(
+        //                 widget.feed.currentLikes ?? "O",
+        //                 style: r16.copyWith(),
+        //               )
+        //             else
+        //               SizedBox(),
+        //           ],
+        //         ),
+        //         SizedBox(width: 20),
+        //         Row(
+        //           children: [
+        //             SvgPicture.asset(
+        //               'assets/icons/comment.svg',
+        //               height: 20,
+        //               width: 20,
+        //               colorFilter: ColorFilter.mode(
+        //                 Theme.of(context).textTheme.bodyMedium!.color!,
+        //                 BlendMode.srcIn,
+        //               ),
+        //             ),
 
-                    SizedBox(width: 5),
-                    if (widget.feed.currentComments != null)
-                      Text(
-                        widget.feed.currentComments ?? "0",
-                        style: r16.copyWith(),
-                      ),
-                  ],
-                ),
-                SizedBox(width: 20),
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/share.svg',
-                      height: 20,
-                      width: 20,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).textTheme.bodyMedium!.color!,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+        //             SizedBox(width: 5),
+        //             if (widget.feed.commentSection != null)
+        //               Text(
+        //                 widget.feed.commentSection!.length.toString(),
+        //                 style: r16.copyWith(),
+        //               ),
+        //           ],
+        //         ),
+        //         SizedBox(width: 20),
+        //         Row(
+        //           children: [
+        //             SvgPicture.asset(
+        //               'assets/icons/share.svg',
+        //               height: 20,
+        //               width: 20,
+        //               colorFilter: ColorFilter.mode(
+        //                 Theme.of(context).textTheme.bodyMedium!.color!,
+        //                 BlendMode.srcIn,
+        //               ),
+        //             ),
 
-                    SizedBox(width: 5),
-                    if (widget.feed.currentShare != null)
-                      Text(
-                        widget.feed.currentShare ?? "0",
-                        style: r16.copyWith(),
-                      ),
-                  ],
-                ),
-              ],
-            ),
+        //             SizedBox(width: 5),
+        //             if (widget.feed.currentShare != null)
+        //               Text(
+        //                 widget.feed.currentShare ?? "0",
+        //                 style: r16.copyWith(),
+        //               ),
+        //           ],
+        //         ),
+        //       ],
+        //     ),
 
-            GestureDetector(
-              onTap: () {
-                Get.toNamed(
-                  Routes.FEED_DETAILS,
-                  arguments: {"feed": widget.feed},
-                );
-              },
-              child: Row(
-                children: [
-                  Text(
-                    'View Full Post',
-                    style: r12.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  SvgPicture.asset(
-                    'assets/icons/arrow-right.svg',
-                    height: 15,
-                    width: 15,
-                    colorFilter: ColorFilter.mode(
-                      Theme.of(context).textTheme.bodySmall?.color ??
-                          Colors.grey,
-                      BlendMode.srcIn, // Most common for solid coloring
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
+        //     if (widget.fromFeedDetail == false)
+        //       GestureDetector(
+        //         onTap: () {
+        //           Get.toNamed(
+        //             Routes.FEED_DETAILS,
+        //             arguments: {"feed": widget.feed},
+        //           );
+        //         },
+        //         child: Row(
+        //           children: [
+        //             Text(
+        //               'View Full Post',
+        //               style: r12.copyWith(
+        //                 color: Theme.of(context).textTheme.bodySmall?.color,
+        //               ),
+        //             ),
+        //             SizedBox(width: 5),
+        //             SvgPicture.asset(
+        //               'assets/icons/arrow-right.svg',
+        //               height: 15,
+        //               width: 15,
+        //               colorFilter: ColorFilter.mode(
+        //                 Theme.of(context).textTheme.bodySmall?.color ??
+        //                     Colors.grey,
+        //                 BlendMode.srcIn, // Most common for solid coloring
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //   ],
+        // ),
+        // const SizedBox(height: 8),
 
         Divider(
-          color: Theme.of(context).textTheme.bodySmall?.color,
+          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.25),
           thickness: .5,
         ),
       ],
@@ -328,9 +349,11 @@ class _FeedTileWidgetState extends State<FeedTileWidget> {
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.folder_zip),
+                      icon: Icon(Icons.folder_zip, color: primary),
                       style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(primary),
+                        backgroundColor: WidgetStatePropertyAll(
+                          primary.withValues(alpha: 0.3),
+                        ),
                       ),
                     ),
                     SizedBox(width: 16),

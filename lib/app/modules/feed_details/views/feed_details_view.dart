@@ -1,12 +1,12 @@
+import 'package:Intellio/app/data/models/feed_models/feed_comment_model.dart';
+import 'package:Intellio/app/widgets/feed_tile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../infrastructure/theme/theme.dart';
 import '../../../widgets/expandable_text.widget.dart';
 import '../../../widgets/fields/custom_form_field.dart';
-import '../../feed/controllers/feed_controller.dart';
 import '../controllers/feed_details_controller.dart';
-import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
 
 class FeedDetailsView extends StatefulWidget {
   const FeedDetailsView({super.key});
@@ -62,146 +62,7 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
   Column buildDetailFeedSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Theme.of(context).textTheme.bodySmall?.color,
-                  backgroundImage: NetworkImage(
-                    controller.feed.userProfileImage ??
-                        "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${controller.feed.userName} > ${controller.feed.space}',
-                      style: r16,
-                    ),
-                    Text(
-                      'Posted at ${controller.feed.postedTime}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Icon(Icons.more_vert),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // Title
-        Text(
-          controller.feed.feedTitle ?? "Untitled",
-          style: r18.copyWith(fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 16),
-
-        // Image Carousel
-        Obx(() {
-          if (controller.feed.postMedia!.isEmpty) return SizedBox.shrink();
-          return Column(
-            children: [
-              SizedBox(
-                height: 250,
-                child: PageView.builder(
-                  controller: pageController,
-                  itemCount: controller.feed.postMedia!.length,
-                  itemBuilder: (context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        controller.feed.postMedia![index],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (controller.feed.postMedia!.length > 1)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(controller.feed.postMedia!.length, (
-                    index,
-                  ) {
-                    bool isActive = index == currentPage.value;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      height: 8,
-                      width: isActive ? 16 : 8,
-                      decoration: BoxDecoration(
-                        color:
-                            isActive
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    );
-                  }),
-                ),
-            ],
-          );
-        }),
-        const SizedBox(height: 16),
-
-        // Content
-        ExpandableText(
-          text: controller.feed.feedDescription ?? '',
-          style: r16.copyWith(fontWeight: FontWeight.w500),
-          maxLines: 15,
-        ),
-        const SizedBox(height: 16),
-
-        Divider(
-          color: Theme.of(context).textTheme.bodySmall?.color,
-          thickness: .5,
-        ),
-        const SizedBox(height: 8),
-
-        // Like, Comment and Share
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.favorite_border),
-                const SizedBox(width: 8),
-                Text('Like', style: r16),
-              ],
-            ),
-            Row(
-              children: [
-                const Icon(Icons.mode_comment_outlined),
-                const SizedBox(width: 8),
-                Text('Comment', style: r16),
-              ],
-            ),
-            Row(
-              children: [
-                const Icon(Icons.share_outlined),
-                const SizedBox(width: 8),
-                Text('Share', style: r16),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Divider(
-          color: Theme.of(context).textTheme.bodySmall?.color,
-          thickness: .5,
-        ),
-        const SizedBox(height: 16),
-      ],
+      children: [FeedTileWidget(feed: controller.feed, fromFeedDetail: true)],
     );
   }
 
@@ -213,10 +74,16 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
         const SizedBox(height: 16),
         buildCommentTexfield(),
         const SizedBox(height: 16),
-        ListView(
+        ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(5, (_) => buildCommentTile(context)),
+          itemCount: controller.feed.commentSection?.length,
+          itemBuilder: (context, index) {
+            return buildCommentTile(
+              context,
+              controller.feed.commentSection![index],
+            );
+          },
         ),
       ],
     );
@@ -225,61 +92,77 @@ class _FeedDetailsViewState extends State<FeedDetailsView> {
   Widget buildCommentTexfield() {
     return SizedBox(
       width: Get.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const CircleAvatar(),
-              const SizedBox(width: 16),
-              SizedBox(
-                width: Get.width / 1.8,
-                child: CustomFormField(
-                  controller: controller.commentController,
-                  hintText: 'Comment here...',
-                  prefixIcon: Icons.mode_comment_outlined,
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'Comment is required';
-                    return null;
-                  },
+      child: Form(
+        key: controller.formKey,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).textTheme.bodySmall?.color,
+                  backgroundImage: NetworkImage(
+                    controller.feed.userProfileImage ??
+                        "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
+                  ),
                 ),
-              ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(primary),
-              shape: const WidgetStatePropertyAll(CircleBorder()),
+                const SizedBox(width: 16),
+                SizedBox(
+                  width: Get.width / 1.8,
+                  child: CustomFormField(
+                    controller: controller.commentController,
+                    hintText: 'Comment here...',
+                    prefixIcon: Icons.mode_comment_outlined,
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Comment is required';
+                      return null;
+                    },
+                  ),
+                ),
+              ],
             ),
-            child: const Icon(Icons.arrow_forward, size: 18),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: controller.onAddComment,
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(primary),
+                shape: const WidgetStatePropertyAll(CircleBorder()),
+              ),
+              child: const Icon(Icons.arrow_forward, size: 18),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildCommentTile(BuildContext context) {
+  Widget buildCommentTile(BuildContext context, FeedCommentModel comment) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(),
+          CircleAvatar(
+            backgroundColor: Theme.of(context).textTheme.bodySmall?.color,
+            backgroundImage: NetworkImage(
+              comment.userProfileImage ??
+                  "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
+            ),
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Saurav Rana",
+                  comment.userName ?? "Unknown User",
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 ExpandableText(
-                  text:
-                      "It is a long established fact that a reader will be distracted by the readable content of a page...",
+                  text: comment.comment ?? "--",
                   style: r16.copyWith(fontWeight: FontWeight.w500),
                   maxLines: 3,
                 ),
