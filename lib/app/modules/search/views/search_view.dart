@@ -1,5 +1,6 @@
 import 'package:Intellio/app/widgets/appbar.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 
@@ -31,6 +32,37 @@ class SearchView extends GetView<search.SearchController> {
                 }
                 return null;
               },
+            ),
+
+            buildFallbackText(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded buildFallbackText() {
+    return Expanded(
+      child: Container(
+        width: Get.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/search.svg',
+              height: 50,
+              width: 50,
+              colorFilter: ColorFilter.mode(
+                regular50,
+                BlendMode.srcIn, // Most common for solid coloring
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              "Notice: currently this feature is not available due to technical limitations.",
+              style: r14.copyWith(color: regular50),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
