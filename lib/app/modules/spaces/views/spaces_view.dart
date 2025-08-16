@@ -373,7 +373,10 @@ class spaceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed(Routes.SPACE_DETAILS);
+        Get.toNamed(Routes.SPACE_DETAILS, arguments: {
+          'spaceName': spaceTitle,
+          'isPrivate': isPrivate,
+        });
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(

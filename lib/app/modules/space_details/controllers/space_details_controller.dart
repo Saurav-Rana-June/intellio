@@ -1,12 +1,19 @@
+import 'package:Intellio/app/data/models/feed_models/feed_model.dart';
+import 'package:Intellio/app/modules/feed/controllers/feed_controller.dart';
 import 'package:get/get.dart';
 
 class SpaceDetailsController extends GetxController {
-  //TODO: Implement SpaceDetailsController
+  RxString spaceName = ''.obs;
+  RxBool isPrivate = false.obs;
+  final feedController = Get.put(FeedController());
+  RxList<FeedTileModel> filteredNewFeeds = <FeedTileModel>[].obs;
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    final args = Get.arguments;
+    spaceName.value = args['spaceName'] ?? '';
+    isPrivate.value = args['isPrivate'] ?? false;
   }
 
   @override
@@ -19,5 +26,11 @@ class SpaceDetailsController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
+  filterFeeds() {
+    final filteredFeeds = feedController.feeds.where((feed) {
+      return feed.space?.name == spaceName.value;
+    }).toList();
+
+    filteredNewFeeds.value = filteredFeeds;
+  }
 }
